@@ -1,0 +1,30 @@
+# 언리얼 엔진 기본 빌드 및 임시 폴더
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/
+Windows/
+*.pak
+*.ucas
+*.utoc
+
+# Visual Studio / Rider 등 C++ IDE 관련 파일 및 폴더
+.vs/
+.idea/
+*.sln
+*.suo
+*.opensdf
+*.sdf
+*.xcworkspace
+*.v11
+*.v12
+*.v15
+
+# OS 자동 생성 파일
+.DS_Store
+Thumbs.db
+
+# 로그 및 충돌 리포트
+*.log
+*.crash
