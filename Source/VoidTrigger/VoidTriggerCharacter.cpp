@@ -332,6 +332,7 @@ void AVoidTriggerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Completed, this, &AVoidTriggerCharacter::StopFire);
 		
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &AVoidTriggerCharacter::Dash);
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &AVoidTriggerCharacter::StartReload);
 		if (PauseAction)
 		{
 			EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &AVoidTriggerCharacter::TogglePause);
@@ -389,6 +390,9 @@ void AVoidTriggerCharacter::Fire()
 
     CurrentAmmo--;
     
+	AddControllerPitchInput(FMath::RandRange(-0.5f, -0.1f));
+	AddControllerYawInput(FMath::RandRange(-0.3f, 0.3f));
+	
     // --- [나이아가라 총구 이펙트 스폰 시작] ---
     if (MuzzleFlashEffect != nullptr && FPSMesh != nullptr)
     {
@@ -696,7 +700,7 @@ void AVoidTriggerCharacter::ShowLevelUpUI()
 
 void AVoidTriggerCharacter::StartReload()
 {
-	if (bIsReloading) return;
+	if (bIsReloading || CurrentAmmo == MaxAmmo) return;
 
 	bIsReloading = true;
 	UE_LOG(LogTemp, Warning, TEXT("재장전 시작..."));
