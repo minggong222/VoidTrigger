@@ -19,11 +19,20 @@ enum class ELevelUpUpgradeType : uint8
 	Damage			UMETA(DisplayName = "공격력 증가"),
 	MoveSpeed		UMETA(DisplayName = "이동속도 증가"),
 	MagnetRange		UMETA(DisplayName = "자력 범위 증가"),
-	MaxHP			UMETA(DisplayName = "최대 체력 증가"),
-	// --- 특수 능력 (희귀) ---
-	PierceShot        UMETA(DisplayName = "관통탄 (특수)"),
-	ScatterShot       UMETA(DisplayName = "산탄 사격 (특수)"),
-	ExplosiveShot     UMETA(DisplayName = "폭발탄 (특수)")
+	MaxHP			UMETA(DisplayName = "최대 체력 증가")
+};
+
+// 2. ★ 로비 무기고 전용 Enum을 새로 만듭니다!
+UENUM(BlueprintType)
+enum class EStartingWeaponType : uint8
+{
+	PierceShot        UMETA(DisplayName = "관통탄"),
+	ScatterShot       UMETA(DisplayName = "산탄 사격"),
+	ExplosiveShot     UMETA(DisplayName = "폭발탄"),
+	ChainLightning    UMETA(DisplayName = "체인 라이트닝"),
+	BlackHoleGrenade  UMETA(DisplayName = "블랙홀 수류탄"),
+	AcidFloor         UMETA(DisplayName = "산성 화염 장판"),
+	AutoDrone         UMETA(DisplayName = "자동공격 드론")
 };
 
 UCLASS()
@@ -325,4 +334,29 @@ public:
 	void Dash();
 	void ResetDash();
 	void EndInvincibility();
+	
+	void EquipStartingWeapon(EStartingWeaponType WeaponType);
+	
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Special")
+	bool bIsChainLightning = false;
+
+	// 연쇄 번개가 튕길 반경 (예: 5미터 = 500.f)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Special")
+	float ChainRadius = 500.f;
+
+	// 연쇄 도탄(팅김) 데미지
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Special")
+	float ChainDamage = 10.f;
+
+	// ★ [추가] 총구에서 적, 혹은 적에서 적에게 날아갈 '총알 궤적' 이펙트 (나이아가라 리본/빔)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects|Special")
+	class UNiagaraSystem* BulletTracerEffect;
+	
+	// AVoidTriggerCharacter.h
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Special")
+	bool bHasBlackHoleMod = false; // 무기고에서 선택하면 true로 변경
+
+	UPROPERTY(EditAnywhere, Category = "Combat|Special")
+	TSubclassOf<AActor> BlackHoleClass;
 };

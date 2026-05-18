@@ -20,6 +20,7 @@
 #include "MySaveGame.h"
 #include "VoidTriggerGold.h"
 #include "VoidTriggerGameInstance.h"
+#include "Engine/OverlapResult.h"
 
 // Sets default values
 AVoidTriggerCharacter::AVoidTriggerCharacter()
@@ -63,7 +64,11 @@ void AVoidTriggerCharacter::BeginPlay()
 	if (GI)
 	{
 		MouseSensitivity = GI->MouseSensitivity;
-		UE_LOG(LogTemp, Warning, TEXT("불러온 감도: %f"), MouseSensitivity);
+		if (GI->bHasStartingTrait)
+		{
+			// ★ 기존 ApplyLevelUpUpgrade 대신 새로 만든 전용 함수 사용!
+			EquipStartingWeapon(GI->StartingWeaponTrait);
+		}
 	}
 	
 	// 향상된 입력 시스템 연결
@@ -376,213 +381,376 @@ void AVoidTriggerCharacter::Look(const FInputActionValue& Value)
 
 void AVoidTriggerCharacter::Fire()
 {
-    if (bIsReloading || CurrentAmmo <= 0) 
+    // ========================================================
+    // 1. 재장전 및 탄약 체크
+    // ========================================================
+    if (bIsReloading || CurrentAmmo <= 0)
     {
-       if (!bIsReloading && CurrentAmmo <= 0) 
-       {
-          StartReload();
-       }
-        
-       // ★ 총알이 없거나 장전 중이면 연사 타이머도 아예 꺼버립니다! (헛방 도는 것 방지)
-       GetWorldTimerManager().ClearTimer(AutoFireTimerHandle);
-       return;
+        if (!bIsReloading && CurrentAmmo <= 0)
+        {
+            StartReload();
+        }
+
+        GetWorldTimerManager().ClearTimer(AutoFireTimerHandle);
+        return;
     }
 
     CurrentAmmo--;
-    
-	AddControllerPitchInput(FMath::RandRange(-0.5f, -0.1f));
-	AddControllerYawInput(FMath::RandRange(-0.3f, 0.3f));
-	
-    // --- [나이아가라 총구 이펙트 스폰 시작] ---
-    if (MuzzleFlashEffect != nullptr && FPSMesh != nullptr)
+
+    // ========================================================
+    // 2. 카메라 정보 가져오기
+    // ========================================================
+    FVector CameraLocation;
+    FRotator CameraRotation;
+
+    if (GetController())
     {
-       UNiagaraFunctionLibrary::SpawnSystemAttached(
-          MuzzleFlashEffect,              
-          FPSMesh,                        
-          FName("Muzzle"),                
-          FVector::ZeroVector,            
-          FRotator::ZeroRotator,          
-          EAttachLocation::SnapToTarget,  
-          true                            
-       );
+        GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
     }
-    
+    else if (FPSCamera)
+    {
+        CameraLocation = FPSCamera->GetComponentLocation();
+        CameraRotation = FPSCamera->GetComponentRotation();
+    }
+
+    FVector BaseForward = CameraRotation.Vector();
+
+    if (FPSMesh == nullptr) return;
+
+    // ========================================================
+    // 3. 총구 위치
+    // ========================================================
+    FVector MuzzleLocation = FPSMesh->GetSocketLocation(TEXT("Muzzle"));
+
+    if (MuzzleLocation.IsNearlyZero())
+    {
+        MuzzleLocation = CameraLocation + (BaseForward * 50.f);
+    }
+
+    // ========================================================
+    // 4. 반동
+    // ========================================================
+    AddControllerPitchInput(FMath::RandRange(-0.5f, -0.1f));
+    AddControllerYawInput(FMath::RandRange(-0.3f, 0.3f));
+
+    // ========================================================
+    // 5. 총구 화염 / 사운드 / 애니메이션
+    // ========================================================
+    if (MuzzleFlashEffect)
+    {
+        UNiagaraFunctionLibrary::SpawnSystemAttached(
+            MuzzleFlashEffect,
+            FPSMesh,
+            FName("Muzzle"),
+            FVector::ZeroVector,
+            FRotator::ZeroRotator,
+            EAttachLocation::SnapToTarget,
+            true
+        );
+    }
+
     if (FireSound)
     {
-       // 내 캐릭터의 현재 위치에서 사운드를 재생합니다.
-       UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+        UGameplayStatics::PlaySoundAtLocation(
+            this,
+            FireSound,
+            GetActorLocation()
+        );
     }
-    // --- [나이아가라 이펙트 스폰 끝] ---
 
     if (FireMontage)
     {
-       if (UAnimInstance* AnimInstance = FPSMesh->GetAnimInstance())
-       {
-          AnimInstance->Montage_Play(FireMontage, 1.0f);
-       }
+        if (UAnimInstance* AnimInstance = FPSMesh->GetAnimInstance())
+        {
+            AnimInstance->Montage_Play(FireMontage, 1.0f);
+        }
     }
-    
-    if (FPSCamera == nullptr) return;
 
-    FVector StartLocation = FPSCamera->GetComponentLocation();
-    FVector BaseForward = FPSCamera->GetForwardVector(); // 기본 조준 방향
-
-    // --- [산탄] ProjectileCount 만큼 반복해서 총알을 쏩니다 ---
+    // ========================================================
+    // 6. 산탄 루프
+    // ========================================================
     for (int32 ShotIndex = 0; ShotIndex < ProjectileCount; ++ShotIndex)
     {
         FVector ShotDirection = BaseForward;
+
+        // 산탄 퍼짐
         if (ProjectileCount > 1)
         {
-            ShotDirection = FMath::VRandCone(BaseForward, FMath::DegreesToRadians(5.f)); 
+            if (ShotIndex > 0)
+            {
+                ShotDirection = FMath::VRandCone(
+                    BaseForward,
+                    FMath::DegreesToRadians(5.f)
+                );
+            }
         }
 
-        FVector EndLocation = StartLocation + (ShotDirection * AttackRange);
+        // ========================================================
+        // 7. 총알 궤적 및 관통 설정 (Sweep으로 판정 개선)
+        // ========================================================
+        FVector TraceEnd = CameraLocation + (ShotDirection * AttackRange);
+        
+        int32 CurrentHits = 0;
+        bool bHasExploded = false;
 
-        FCollisionQueryParams CollisionParams;
-        CollisionParams.AddIgnoredActor(this); // 나 자신 무시
+        FVector DynamicStartLocation = CameraLocation;
+        FVector VisualStartLocation = MuzzleLocation;
 
-        int32 CurrentHits = 0;     // 현재 이 총알이 관통한 적의 수
-        bool bHasExploded = false; // ★ 이 총알 궤적에서 폭발이 일어났는지 확인하는 스위치
+        // 관통 시 이미 맞춘 적을 다시 맞추지 않기 위한 배열
+        TArray<AActor*> PiercedActors;
+        PiercedActors.Add(this);
 
-        // --- [관통] 맞춘 적을 무시하고 뒤로 계속 뚫고 지나가는 While 루프 ---
+        // 총알의 판정 두께 (반지름 15.f, 타격감이 부족하면 이 수치를 늘리세요)
+        float BulletRadius = 15.f; 
+        FCollisionShape SphereShape = FCollisionShape::MakeSphere(BulletRadius);
+
+        // ========================================================
+        // 8. 관통 루프
+        // ========================================================
         while (CurrentHits <= PierceCount)
         {
             FHitResult HitResult;
-            
-            // Multi가 아닌 Single 트레이스 사용!
-            bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, CollisionParams);
+            FCollisionQueryParams CollisionParams;
+            CollisionParams.AddIgnoredActors(PiercedActors);
 
+            // LineTraceSingleByChannel 대신 SweepSingleByChannel 사용하여 명중률 증가
+            bool bHit = GetWorld()->SweepSingleByChannel(
+                HitResult,
+                DynamicStartLocation,
+                TraceEnd,
+                FQuat::Identity,
+                ECC_Visibility,
+                SphereShape,
+                CollisionParams
+            );
+
+            // ====================================================
+            // A. 맞췄을 때
+            // ====================================================
             if (bHit)
             {
                 AActor* HitActor = HitResult.GetActor();
+
                 if (HitActor)
                 {
-                    // 1. 기본 데미지 및 크리티컬 계산
-                    float FinalDamage = Damage; 
+                    // ====================================================
+                    // 예광탄
+                    // ====================================================
+                    if (BulletTracerEffect)
+                    {
+                        FRotator TracerRotation = (HitResult.ImpactPoint - VisualStartLocation).Rotation();
+
+                        UNiagaraComponent* TracerComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+                            GetWorld(),
+                            BulletTracerEffect,
+                            VisualStartLocation,
+                            TracerRotation
+                        );
+
+                        if (TracerComp)
+                        {
+                            TracerComp->SetVariableVec3(FName("User.BeamEnd"), HitResult.ImpactPoint);
+                        }
+                    }
+
+                    // ====================================================
+                    // 데미지
+                    // ====================================================
+                    float FinalDamage = Damage;
                     bool bIsCritical = false;
 
                     if (FMath::FRand() <= CritChance)
                     {
-                       FinalDamage = Damage * CritMultiplier;
-                       bIsCritical = true;
+                        FinalDamage *= CritMultiplier;
+                        bIsCritical = true;
                     }
 
-                    UGameplayStatics::ApplyDamage(HitActor, FinalDamage, GetController(), this, UDamageType::StaticClass());
+                    UGameplayStatics::ApplyDamage(
+                        HitActor,
+                        FinalDamage,
+                        GetController(),
+                        this,
+                        UDamageType::StaticClass()
+                    );
 
-                    if (bIsCritical)
-                    {
-                       UE_LOG(LogTemp, Warning, TEXT("💥 크리티컬 적중!! 최종 데미지: %f"), FinalDamage);
-                    }
-                    else
-                    {
-                       UE_LOG(LogTemp, Log, TEXT("일반 적중. 데미지: %f"), FinalDamage);
-                    }
-
-                    // ========================================================
-                    // --- [🩸 몬스터 피격 & 관통 처리 & 제압 사격] ---
+                    // ====================================================
+                    // 몬스터 처리
+                    // ====================================================
                     if (HitActor->ActorHasTag(FName("Monster")))
                     {
+                        // 피격 이펙트
                         if (HitImpactEffect)
                         {
                             UNiagaraFunctionLibrary::SpawnSystemAtLocation(
                                 GetWorld(),
                                 HitImpactEffect,
-                                HitResult.ImpactPoint,             // 맞은 정확한 위치
-                                HitResult.ImpactNormal.Rotation()  // 튀어나오는 방향
+                                HitResult.ImpactPoint,
+                                HitResult.ImpactNormal.Rotation()
                             );
                         }
-                        
-                        // 제압 사격: 적 이동 속도 감소
-                        if (SuppressionLevel > 0)
+
+                        // ====================================================
+                        // 체인 라이트닝
+                        // ====================================================
+                        if (bIsChainLightning)
                         {
-                            ACharacter* Enemy = Cast<ACharacter>(HitActor);
-                            if (Enemy && Enemy->GetCharacterMovement())
+                            FVector Origin = HitResult.ImpactPoint; 
+
+                            FCollisionShape ChainSphereShape = FCollisionShape::MakeSphere(ChainRadius);
+                            TArray<FOverlapResult> OverlapResults;
+        
+                            FCollisionQueryParams OverlapParams;
+                            OverlapParams.AddIgnoredActor(this);     
+                            OverlapParams.AddIgnoredActor(HitActor); // 방금 맞은 몹 제외
+
+                            bool bFoundChainTarget = GetWorld()->OverlapMultiByChannel(
+                                OverlapResults, Origin, FQuat::Identity, ECC_Visibility, ChainSphereShape, OverlapParams
+                            );
+
+                            if (bFoundChainTarget)
                             {
-                                if (!Enemy->ActorHasTag(FName("Slowed")))
+                                for (const FOverlapResult& Result : OverlapResults)
                                 {
-                                    float OriginalSpeed = Enemy->GetCharacterMovement()->MaxWalkSpeed;
-                                    float SlowMultiplier = 1.0f - (SuppressionLevel * SuppressionSlowPower);
-                                    float NewSpeed = OriginalSpeed * FMath::Max(0.2f, SlowMultiplier);
-
-                                    Enemy->GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
-                                    Enemy->Tags.Add(FName("Slowed"));
-
-                                    UE_LOG(LogTemp, Log, TEXT("🎯 제압 사격 발동! 속도: %f -> %f"), OriginalSpeed, NewSpeed);
-
-                                    FTimerHandle SlowTimerHandle;
-                                    FTimerDelegate SlowDelegate;
-                                    TWeakObjectPtr<ACharacter> WeakEnemy = Enemy; 
-
-                                    SlowDelegate.BindLambda([WeakEnemy, OriginalSpeed]()
+                                    AActor* ChainTarget = Result.GetActor();
+                                    if (ChainTarget && ChainTarget->ActorHasTag(FName("Monster")))
                                     {
-                                        if (WeakEnemy.IsValid() && WeakEnemy->GetCharacterMovement())
+                                        // 1. 도탄 데미지 적용
+                                        UGameplayStatics::ApplyDamage(ChainTarget, ChainDamage, GetController(), this, UDamageType::StaticClass());
+                    
+                                        // 2. 도탄 피격 이펙트
+                                        if (HitImpactEffect)
                                         {
-                                            WeakEnemy->GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed;
-                                            WeakEnemy->Tags.Remove(FName("Slowed")); 
-                                            UE_LOG(LogTemp, Log, TEXT("✅ 제압 사격 효과 종료. 원래 속도로 복구!"));
-                                        }
-                                    });
+                                            FVector EffectLocation = ChainTarget->GetActorLocation();
+                                            FRotator EffectRotation = (Origin - EffectLocation).Rotation();
 
-                                    GetWorld()->GetTimerManager().SetTimer(SlowTimerHandle, SlowDelegate, 1.0f, false);
+                                            UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+                                                GetWorld(), 
+                                                HitImpactEffect, 
+                                                EffectLocation, 
+                                                EffectRotation
+                                            );
+                                        }
+
+                                        // 3. 도탄 총알 선 (예광탄)
+                                        if (BulletTracerEffect)
+                                        {
+                                            UNiagaraComponent* BounceTracerComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+                                                GetWorld(), BulletTracerEffect, Origin
+                                            );
+
+                                            if (BounceTracerComp)
+                                            {
+                                                BounceTracerComp->SetVariableVec3(FName("User.BeamEnd"), ChainTarget->GetActorLocation());
+                                            }
+                                        }
+                                        break; // 1마리만 튕기기
+                                    }
                                 }
                             }
                         }
 
-                        // ★ [관통 핵심] 몬스터를 맞췄으므로 횟수를 올리고, 무시 목록에 넣어 다음 트레이스 때는 통과하게 만듭니다.
-                        CurrentHits++; 
-                        CollisionParams.AddIgnoredActor(HitActor); 
+                    	if (bHasBlackHoleMod && FMath::FRand() <= 1.00f)
+                    	{
+                    		if (BlackHoleClass) 
+                    		{
+                    			GetWorld()->SpawnActor<AActor>(BlackHoleClass, HitResult.ImpactPoint, FRotator::ZeroRotator);
+                    		}
+                    	}
+                    	
+                        // ====================================================
+                        // 관통 처리 (업데이트)
+                        // ====================================================
+                        // 총알이 나아가는 방향(ShotDirection)으로 조금 더 앞에서 트레이스 시작
+                        DynamicStartLocation = HitResult.ImpactPoint + (ShotDirection * 5.f);
+                        VisualStartLocation = HitResult.ImpactPoint;
+                        
+                        CurrentHits++;
+                        
+                        // 방금 맞춘 몬스터는 다음 트레이스에서 무시하여 중복 타격 방지
+                        PiercedActors.Add(HitActor); 
                     }
                     else
                     {
-                        // 몬스터가 아닌 벽/바닥을 맞췄다면 더 이상 관통 불가 -> 루프 탈출
+                        // 몬스터가 아닌 벽/바닥 등에 맞으면 관통을 멈추고 루프 탈출
                         break;
                     }
-                    // ========================================================
 
-                    // ========================================================
-                    // --- [💥 폭발탄 (단 한 번만 터짐)] ---
+                    // ====================================================
+                    // 폭발 처리
+                    // ====================================================
                     if (ExplosionRadius > 0.f && !bHasExploded)
                     {
-                        bHasExploded = true; // 터짐 스위치 ON (다음 관통된 적에선 안 터짐)
+                        bHasExploded = true;
 
                         if (ExplosionEffect)
                         {
-                           UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-                               GetWorld(), ExplosionEffect, HitResult.ImpactPoint, FRotator::ZeroRotator
-                           );
+                            UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+                                GetWorld(),
+                                ExplosionEffect,
+                                HitResult.ImpactPoint,
+                                FRotator::ZeroRotator
+                            );
                         }
-                        
+
                         if (ExplosionSound)
                         {
-                           UGameplayStatics::PlaySoundAtLocation(this, ExplosionSound, HitResult.ImpactPoint);
+                            UGameplayStatics::PlaySoundAtLocation(
+                                this,
+                                ExplosionSound,
+                                HitResult.ImpactPoint
+                            );
                         }
-                        
-                        TArray<AActor*> IgnoredActors; 
-                        IgnoredActors.Add(this);       // 나 자신은 폭발 무시
+
+                        TArray<AActor*> IgnoredActors;
+                        IgnoredActors.Add(this);
 
                         UGameplayStatics::ApplyRadialDamage(
-                           GetWorld(), 
-                           ExplosionDamage,                   
-                           HitResult.ImpactPoint,  
-                           ExplosionRadius,                   
-                           UDamageType::StaticClass(), 
-                           IgnoredActors, 
-                           this, 
-                           GetController()
+                            GetWorld(),
+                            ExplosionDamage,
+                            HitResult.ImpactPoint,
+                            ExplosionRadius,
+                            UDamageType::StaticClass(),
+                            IgnoredActors,
+                            this,
+                            GetController()
                         );
                     }
-                    // ========================================================
                 }
             }
+            // ====================================================
+            // B. 허공 발사
+            // ====================================================
             else
             {
-                // 아무것도 맞지 않았다면 루프 탈출
-                break;
-            }
-        } // 관통 While 루프 끝
-    } // 산탄 For 루프 끝
+                if (BulletTracerEffect)
+                {
+                    FRotator MissRotation = (TraceEnd - VisualStartLocation).Rotation();
 
-    if (CurrentAmmo <= 0) StartReload();
+                    UNiagaraComponent* MissTracerComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+                        GetWorld(),
+                        BulletTracerEffect,
+                        VisualStartLocation,
+                        MissRotation
+                    );
+
+                    if (MissTracerComp)
+                    {
+                        MissTracerComp->SetVariableVec3(FName("User.BeamEnd"), TraceEnd);
+                    }
+                }
+
+                break; // 트레이스 종료
+            }
+        }
+    }
+
+    // ========================================================
+    // 10. 자동 재장전
+    // ========================================================
+    if (CurrentAmmo <= 0)
+    {
+        StartReload();
+    }
 }
 
 // ==========================================
@@ -845,32 +1013,6 @@ void AVoidTriggerCharacter::ApplyLevelUpUpgrade(ELevelUpUpgradeType UpgradeType)
 		CurrentHP = FMath::Clamp(CurrentHP, 0.f, MaxHP);
 		break;
 		
-	case ELevelUpUpgradeType::PierceShot:
-		PierceCount += 1; // 뚫는 횟수 1 증가
-		UE_LOG(LogTemp, Warning, TEXT("특수 능력: 관통탄 획득!"));
-		break;
-
-	case ELevelUpUpgradeType::ScatterShot:
-		ProjectileCount += 1; // 발사체 수 1 증가
-		UE_LOG(LogTemp, Warning, TEXT("특수 능력: 산탄 사격 획득!"));
-		break;
-
-	case ELevelUpUpgradeType::ExplosiveShot:
-		// 처음 먹었을 때: 기본 폭발 능력 부여
-		if (ExplosionRadius == 0.f)
-		{
-			ExplosionRadius = 250.f;
-			ExplosionDamage = 15.f;
-			UE_LOG(LogTemp, Warning, TEXT("특수 능력: 폭발탄 최초 획득!"));
-		}
-		// 두 번째 이상 먹었을 때: 폭발 능력 강화
-		else
-		{
-			ExplosionRadius += 50.f; // 범위 증가
-			ExplosionDamage += 10.f; // 데미지 증가
-			UE_LOG(LogTemp, Warning, TEXT("특수 능력: 폭발탄 강화! (범위: %f, 딜: %f)"), ExplosionRadius, ExplosionDamage);
-		}
-		break;
 	
 	default:
 		break;
@@ -929,17 +1071,6 @@ TArray<ELevelUpUpgradeType> AVoidTriggerCharacter::GetRandomUpgrades(int32 Count
 	for (ELevelUpUpgradeType Upgrade : NormalUpgrades)
 	{
 		for (int i = 0; i < 10; i++) LotteryPool.Add(Upgrade);
-	}
-
-	// 2. 특수 업그레이드는 추첨함에 딱 1장씩만 넣습니다. (당첨 확률 매우 낮음)
-	TArray<ELevelUpUpgradeType> SpecialUpgrades = {
-		ELevelUpUpgradeType::PierceShot, 
-		ELevelUpUpgradeType::ScatterShot, 
-		ELevelUpUpgradeType::ExplosiveShot
-	};
-	for (ELevelUpUpgradeType Upgrade : SpecialUpgrades)
-	{
-		LotteryPool.Add(Upgrade);
 	}
 
 	// 3. 3개를 뽑습니다. (중복 방지 로직 포함)
@@ -1080,5 +1211,37 @@ void AVoidTriggerCharacter::TogglePause(const FInputActionValue& Value)
 		PC->bShowMouseCursor = false;
 		FInputModeGameOnly InputMode;
 		PC->SetInputMode(InputMode);
+	}
+}
+
+void AVoidTriggerCharacter::EquipStartingWeapon(EStartingWeaponType WeaponType)
+{
+	switch (WeaponType)
+	{
+	case EStartingWeaponType::PierceShot:
+		PierceCount += 1;
+		UE_LOG(LogTemp, Warning, TEXT("[무기고] 관통탄 장착 완료!"));
+		break;
+
+	case EStartingWeaponType::ScatterShot:
+		ProjectileCount += 1; // 샷건 효과
+		UE_LOG(LogTemp, Warning, TEXT("[무기고] 산탄 사격 장착 완료!"));
+		break;
+
+	case EStartingWeaponType::ExplosiveShot:
+		ExplosionRadius = 250.f;
+		ExplosionDamage = 15.f;
+		UE_LOG(LogTemp, Warning, TEXT("[무기고] 폭발탄 장착 완료!"));
+		break;
+		
+	case EStartingWeaponType::ChainLightning:
+		bIsChainLightning = true;
+		UE_LOG(LogTemp, Warning, TEXT("[무기고] 도탄 장착 완료!"));
+		break;
+		
+	case EStartingWeaponType::BlackHoleGrenade:
+		bIsChainLightning = true;
+		UE_LOG(LogTemp, Warning, TEXT("[무기고] 블랙홀 장착 완료!"));
+		break;
 	}
 }
