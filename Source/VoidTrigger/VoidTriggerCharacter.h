@@ -378,4 +378,27 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "Combat|Special")
 	TSubclassOf<class AVoidDrone> DroneClass;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat|Special")
+    TMap<EStartingWeaponType, int32> SpecialWeaponLevels;
+	
+	// 4. 체인 라이트닝 도탄 횟수
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Special")
+	int32 MaxChainCount = 0;
+
+	// 5. 블랙홀 발동 확률 (0.0 ~ 1.0)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Special")
+	float BlackHoleChance = 0.0f;
+
+	// 6. 산성 화염 장판 데미지
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Special")
+	float AcidFloorDamage = 0.0f;
+
+	// 7. 자동공격 드론 공속 (공격 주기)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Special")
+	float DroneAttackRate = 2.0f;
+
+	// ★ [추가] 무기고 스탯 일괄 적용 함수
+	UFUNCTION(BlueprintCallable, Category = "Combat|Special")
+	void InitializeArmoryWeapons(const TMap<EStartingWeaponType, int32>& ArmoryStats);
 };

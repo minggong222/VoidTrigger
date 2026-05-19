@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "VoidTriggerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -23,12 +20,10 @@
 #include "VoidTriggerGameInstance.h"
 #include "Engine/OverlapResult.h"
 
-// Sets default values
 AVoidTriggerCharacter::AVoidTriggerCharacter()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    // 1. 카메라 생성 및 부착
     FPSCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FPSCamera"));
     FPSCamera->SetupAttachment(GetCapsuleComponent());
     FPSCamera->SetRelativeLocation(FVector(0.f, 0.f, 60.f)); 
@@ -39,20 +34,16 @@ AVoidTriggerCharacter::AVoidTriggerCharacter()
     FPSMesh->bCastDynamicShadow = false; 
     FPSMesh->CastShadow = false;
     
-    // 2. 가상의 총기 생성 및 부착
     GunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunMesh"));
     GunMesh->SetupAttachment(FPSCamera); 
     GunMesh->SetRelativeLocation(FVector(40.f, 20.f, -20.f)); 
     
-    // 자석 컴포넌트 생성 및 캡슐(루트)에 부착
     MagnetCollision = CreateDefaultSubobject<USphereComponent>(TEXT("MagnetCollision"));
     MagnetCollision->SetupAttachment(RootComponent);
-
     MagnetCollision->InitSphereRadius(300.f);
     MagnetCollision->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 }
 
-// Called when the game starts or when spawned
 void AVoidTriggerCharacter::BeginPlay()
 {
     Super::BeginPlay();
@@ -60,11 +51,7 @@ void AVoidTriggerCharacter::BeginPlay()
     UVoidTriggerGameInstance* GI = Cast<UVoidTriggerGameInstance>(GetGameInstance());
     if (GI)
     {
-       MouseSensitivity = GI->MouseSensitivity;
-       if (GI->bHasStartingTrait)
-       {
-          EquipStartingWeapon(GI->StartingWeaponTrait);
-       }
+        MouseSensitivity = GI->MouseSensitivity;
     }
     
     if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -90,21 +77,18 @@ void AVoidTriggerCharacter::BeginPlay()
        {
           float DamageMultiplier = (*LvPtr) * 0.05f; 
           Damage = Damage + (Damage * DamageMultiplier);
-          UE_LOG(LogTemp, Warning, TEXT("[특성 적용] 화력 강화 Lv.%d 적용 완료! 현재 데미지: %f"), *LvPtr, Damage);
        }
        
        if (int32* LvPtr = SaveData->TraitLevels.Find(FName("ATK_Reload")))
        {
           float ReduceAmount = (*LvPtr) * 0.2f;
           ReloadTime = FMath::Max(0.3f, ReloadTime - ReduceAmount);
-          UE_LOG(LogTemp, Warning, TEXT("[특성 적용] 전술 장전 Lv.%d 적용! 재장전 시간: %f초"), *LvPtr, ReloadTime);
        }
 
        if (int32* LvPtr = SaveData->TraitLevels.Find(FName("ATK_Crit")))
        {
           CritChance += (*LvPtr) * 0.05f; 
           CritMultiplier += (*LvPtr) * 0.2f; 
-          UE_LOG(LogTemp, Warning, TEXT("[특성 적용] 급소 조준 Lv.%d 적용! 치명확률: %f / 배율: %f"), *LvPtr, CritChance, CritMultiplier);
        }
        
        if (int32* LvPtr = SaveData->TraitLevels.Find(FName("ATK_Mag")))
@@ -112,13 +96,11 @@ void AVoidTriggerCharacter::BeginPlay()
           int32 ExtraAmmo = (*LvPtr) * 5;
           MaxAmmo += ExtraAmmo;
           CurrentAmmo = MaxAmmo; 
-          UE_LOG(LogTemp, Warning, TEXT("[특성 적용] 탄창 확장 Lv.%d 적용! 최대 탄창: %d발"), *LvPtr, MaxAmmo);
        }
        
        if (int32* LvPtr = SaveData->TraitLevels.Find(FName("ATK_Suppress")))
        {
           SuppressionLevel = *LvPtr;
-          UE_LOG(LogTemp, Warning, TEXT("[특성 적용] 제압 사격 Lv.%d 활성화!"), SuppressionLevel);
        }
        
        if (int32* LvPtr = SaveData->TraitLevels.Find(FName("SUR_Health")))
@@ -126,77 +108,60 @@ void AVoidTriggerCharacter::BeginPlay()
           float HealthMultiplier = (*LvPtr) * 0.1f;
           MaxHP = MaxHP + (MaxHP * HealthMultiplier);
           CurrentHP = MaxHP;
-          UE_LOG(LogTemp, Warning, TEXT("[특성 적용] 체력 단련 Lv.%d 적용 완료! 최대 체력: %f"), *LvPtr, MaxHP);
        }
        
-       // =======================================================
-       // [생존 트리 Tier 2] 전술 기동: 이동 속도 증가 및 스테미나 증가
-       // =======================================================
-    	if (int32* LvPtr = SaveData->TraitLevels.Find(FName("SUR_Speed")))
-    	{
-    		// 1. 이동 속도 증가
-    		float SpeedBonus = (*LvPtr) * 50.0f;
-    		MoveSpeed += SpeedBonus;
-    		// [기존 코드 삭제됨] SprintSpeed += SpeedBonus; 
+       if (int32* LvPtr = SaveData->TraitLevels.Find(FName("SUR_Speed")))
+       {
+           float SpeedBonus = (*LvPtr) * 50.0f;
+           MoveSpeed += SpeedBonus;
             
-    		if (GetCharacterMovement())
-    		{
-    			GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
-    		}
+           if (GetCharacterMovement())
+           {
+              GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
+           }
 
-    		// 2. 최대 스테미나 증가 (레벨당 30)
-    		float StaminaBonus = (*LvPtr) * 30.0f;
-    		MaxStamina += StaminaBonus;
-    		CurrentStamina = MaxStamina;
-
-    		UE_LOG(LogTemp, Warning, TEXT("[특성 적용] 전술 기동 Lv.%d! 이동속도: %f / 최대 스테미나: %f"), *LvPtr, MoveSpeed, MaxStamina);
-    	}
+           float StaminaBonus = (*LvPtr) * 30.0f;
+           MaxStamina += StaminaBonus;
+           CurrentStamina = MaxStamina;
+       }
        
        if (int32* LvPtr = SaveData->TraitLevels.Find(FName("SUR_Armor")))
        {
-          DamageReductionRate = (*LvPtr) * 0.05f;
-          DamageReductionRate = FMath::Min(0.5f, DamageReductionRate);
-          UE_LOG(LogTemp, Warning, TEXT("[특성 적용] 방호복 강화 Lv.%d! 피해 감소율: %f%%"), *LvPtr, DamageReductionRate * 100.f);
+          DamageReductionRate = FMath::Min(0.5f, (*LvPtr) * 0.05f);
        }
        
        if (int32* LvPtr = SaveData->TraitLevels.Find(FName("SUR_Heal")))
        {
           LevelUpHealRate = (*LvPtr) * 0.1f;
-          UE_LOG(LogTemp, Warning, TEXT("[특성 적용] 전장 응급처치 Lv.%d! 레벨업 시 회복률: %f%%"), *LvPtr, LevelUpHealRate * 100.f);
        }
        
-        if (int32* LvPtr = SaveData->TraitLevels.Find(FName("SUR_Revive")))
-        {
-            bHasReviveTrait = true;
-            CurrentReviveCooldown = FMath::Max(30.0f, 120.0f - ((*LvPtr) * 20.0f));
-            UE_LOG(LogTemp, Warning, TEXT("[특성 적용] ★불굴의 의지★ 활성화! 쿨타임: %f초"), CurrentReviveCooldown);
-        }
+       if (int32* LvPtr = SaveData->TraitLevels.Find(FName("SUR_Revive")))
+       {
+           bHasReviveTrait = true;
+           CurrentReviveCooldown = FMath::Max(30.0f, 120.0f - ((*LvPtr) * 20.0f));
+       }
 
-        if (int32* LvPtr = SaveData->TraitLevels.Find(FName("UTL_Drop")))
-        {
-            ResourceDropBonus = (*LvPtr) * 0.15f;
-            UE_LOG(LogTemp, Warning, TEXT("[특성 적용] 자원 채굴 Lv.%d! 드랍 보너스: %f%%"), *LvPtr, ResourceDropBonus * 100.f);
-        }
+       if (int32* LvPtr = SaveData->TraitLevels.Find(FName("UTL_Drop")))
+       {
+           ResourceDropBonus = (*LvPtr) * 0.15f;
+       }
 
-        if (int32* LvPtr = SaveData->TraitLevels.Find(FName("UTL_Rarity")))
-        {
-            SpecialDropBonus = (*LvPtr) * 0.01f;
-            UE_LOG(LogTemp, Warning, TEXT("[특성 적용] 보급품 탐색 Lv.%d (특수드랍 +%f%%)"), *LvPtr, SpecialDropBonus * 100.f);
-        }
+       if (int32* LvPtr = SaveData->TraitLevels.Find(FName("UTL_Rarity")))
+       {
+           SpecialDropBonus = (*LvPtr) * 0.01f;
+       }
 
-        if (int32* LvPtr = SaveData->TraitLevels.Find(FName("UTL_Discount")))
-        {
-            DiscountRate = (*LvPtr) * 0.05f;
-            UE_LOG(LogTemp, Warning, TEXT("[특성 적용] 상인 로비 Lv.%d (상점 가격 %f%% 할인)"), *LvPtr, DiscountRate * 100.f);
-        }
+       if (int32* LvPtr = SaveData->TraitLevels.Find(FName("UTL_Discount")))
+       {
+           DiscountRate = (*LvPtr) * 0.05f;
+       }
 
-        if (int32* LvPtr = SaveData->TraitLevels.Find(FName("UTL_Reroll")))
-        {
-            ExtraChoiceCount = (*LvPtr >= 3) ? 2 : 1; 
-            MaxRerollCount = *LvPtr; 
-            CurrentRerollCount = MaxRerollCount;
-            UE_LOG(LogTemp, Error, TEXT("[특성 적용] 👑 전략적 선택 발동! 선택지+%d, 리롤 %d회"), ExtraChoiceCount, MaxRerollCount);
-        }
+       if (int32* LvPtr = SaveData->TraitLevels.Find(FName("UTL_Reroll")))
+       {
+           ExtraChoiceCount = (*LvPtr >= 3) ? 2 : 1; 
+           MaxRerollCount = *LvPtr; 
+           CurrentRerollCount = MaxRerollCount;
+       }
 
        if (int32* LvPtr = SaveData->TraitLevels.Find(FName("UTL_StartCash")))
        {
@@ -204,12 +169,13 @@ void AVoidTriggerCharacter::BeginPlay()
           {
              GainExp(MaxExp); 
           }
-          UE_LOG(LogTemp, Warning, TEXT("[특성 적용] 시작 보급 Lv.%d 적용 완료!"), *LvPtr);
        }
-    }
-    else
-    {
-       UE_LOG(LogTemp, Warning, TEXT("세이브 파일이 없습니다. 기본 스탯으로 시작합니다."));
+
+       // 무기고 영구 저장 스탯 일괄 적용
+       if (SaveData->bHasSavedStartingTrait && SaveData->SavedArmoryWeaponStats.Num() > 0)
+       {
+          InitializeArmoryWeapons(SaveData->SavedArmoryWeaponStats);
+       }
     }
     
     if (HUDClass)
@@ -228,40 +194,29 @@ void AVoidTriggerCharacter::BeginPlay()
     }
 }
 
-// Called every frame
 void AVoidTriggerCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    // ==========================================
-    // 스테미나 소모 및 회복 로직
-    // ==========================================
     if (bIsSprinting && GetCharacterMovement()->Velocity.SizeSquared2D() > 0.f)
     {
-        // 뛰고 있으면서 실제로 이동 중일 때만 스테미나 소모
         CurrentStamina -= StaminaConsumeRate * DeltaTime;
 
         if (CurrentStamina <= 0.f)
         {
             CurrentStamina = 0.f;
-            StopSprint(); // 스테미나 고갈 시 달리기 강제 종료
+            StopSprint();
         }
     }
     else
     {
-        // 뛰고 있지 않을 때 스테미나 자동 회복
         if (CurrentStamina < MaxStamina)
         {
-            CurrentStamina += StaminaRegenRate * DeltaTime;
-            if (CurrentStamina > MaxStamina)
-            {
-                CurrentStamina = MaxStamina;
-            }
+            CurrentStamina = FMath::Min(MaxStamina, CurrentStamina + (StaminaRegenRate * DeltaTime));
         }
     }
 }
 
-// Called to bind functionality to input
 void AVoidTriggerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -274,7 +229,6 @@ void AVoidTriggerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
        EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &AVoidTriggerCharacter::StartFire);
        EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Completed, this, &AVoidTriggerCharacter::StopFire);
        
-       // 대시 대신 달리기 바인딩 (누를 때 Start, 뗄 때 Stop)
        if (SprintAction)
        {
            EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AVoidTriggerCharacter::StartSprint);
@@ -324,7 +278,6 @@ void AVoidTriggerCharacter::Fire()
         {
             StartReload();
         }
-
         GetWorldTimerManager().ClearTimer(AutoFireTimerHandle);
         return;
     }
@@ -345,11 +298,9 @@ void AVoidTriggerCharacter::Fire()
     }
 
     FVector BaseForward = CameraRotation.Vector();
-
     if (FPSMesh == nullptr) return;
 
     FVector MuzzleLocation = FPSMesh->GetSocketLocation(TEXT("Muzzle"));
-
     if (MuzzleLocation.IsNearlyZero())
     {
         MuzzleLocation = CameraLocation + (BaseForward * 50.f);
@@ -360,24 +311,12 @@ void AVoidTriggerCharacter::Fire()
 
     if (MuzzleFlashEffect)
     {
-        UNiagaraFunctionLibrary::SpawnSystemAttached(
-            MuzzleFlashEffect,
-            FPSMesh,
-            FName("Muzzle"),
-            FVector::ZeroVector,
-            FRotator::ZeroRotator,
-            EAttachLocation::SnapToTarget,
-            true
-        );
+        UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFlashEffect, FPSMesh, FName("Muzzle"), FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
     }
 
     if (FireSound)
     {
-        UGameplayStatics::PlaySoundAtLocation(
-            this,
-            FireSound,
-            GetActorLocation()
-        );
+        UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
     }
 
     if (FireMontage)
@@ -392,15 +331,9 @@ void AVoidTriggerCharacter::Fire()
     {
         FVector ShotDirection = BaseForward;
 
-        if (ProjectileCount > 1)
+        if (ProjectileCount > 1 && ShotIndex > 0)
         {
-            if (ShotIndex > 0)
-            {
-                ShotDirection = FMath::VRandCone(
-                    BaseForward,
-                    FMath::DegreesToRadians(5.f)
-                );
-            }
+            ShotDirection = FMath::VRandCone(BaseForward, FMath::DegreesToRadians(5.f));
         }
 
         FVector TraceEnd = CameraLocation + (ShotDirection * AttackRange);
@@ -423,33 +356,17 @@ void AVoidTriggerCharacter::Fire()
             FCollisionQueryParams CollisionParams;
             CollisionParams.AddIgnoredActors(PiercedActors);
 
-            bool bHit = GetWorld()->SweepSingleByChannel(
-                HitResult,
-                DynamicStartLocation,
-                TraceEnd,
-                FQuat::Identity,
-                ECC_Visibility,
-                SphereShape,
-                CollisionParams
-            );
+            bool bHit = GetWorld()->SweepSingleByChannel(HitResult, DynamicStartLocation, TraceEnd, FQuat::Identity, ECC_Visibility, SphereShape, CollisionParams);
 
             if (bHit)
             {
                 AActor* HitActor = HitResult.GetActor();
-
                 if (HitActor)
                 {
                     if (BulletTracerEffect)
                     {
                         FRotator TracerRotation = (HitResult.ImpactPoint - VisualStartLocation).Rotation();
-
-                        UNiagaraComponent* TracerComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-                            GetWorld(),
-                            BulletTracerEffect,
-                            VisualStartLocation,
-                            TracerRotation
-                        );
-
+                        UNiagaraComponent* TracerComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BulletTracerEffect, VisualStartLocation, TracerRotation);
                         if (TracerComp)
                         {
                             TracerComp->SetVariableVec3(FName("User.BeamEnd"), HitResult.ImpactPoint);
@@ -457,38 +374,24 @@ void AVoidTriggerCharacter::Fire()
                     }
 
                     float FinalDamage = Damage;
-                    bool bIsCritical = false;
-
                     if (FMath::FRand() <= CritChance)
                     {
                         FinalDamage *= CritMultiplier;
-                        bIsCritical = true;
                     }
 
-                    UGameplayStatics::ApplyDamage(
-                        HitActor,
-                        FinalDamage,
-                        GetController(),
-                        this,
-                        UDamageType::StaticClass()
-                    );
+                    UGameplayStatics::ApplyDamage(HitActor, FinalDamage, GetController(), this, UDamageType::StaticClass());
 
                     if (HitActor->ActorHasTag(FName("Monster")))
                     {
                         if (HitImpactEffect)
                         {
-                            UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-                                GetWorld(),
-                                HitImpactEffect,
-                                HitResult.ImpactPoint,
-                                HitResult.ImpactNormal.Rotation()
-                            );
+                            UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitImpactEffect, HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation());
                         }
 
-                        if (bIsChainLightning)
+                        // ★ 체인 라이트닝: 레벨에 따른 다중 도탄 적용
+                        if (bIsChainLightning && MaxChainCount > 0)
                         {
                             FVector Origin = HitResult.ImpactPoint; 
-
                             FCollisionShape ChainSphereShape = FCollisionShape::MakeSphere(ChainRadius);
                             TArray<FOverlapResult> OverlapResults;
         
@@ -496,14 +399,15 @@ void AVoidTriggerCharacter::Fire()
                             OverlapParams.AddIgnoredActor(this);     
                             OverlapParams.AddIgnoredActor(HitActor); 
 
-                            bool bFoundChainTarget = GetWorld()->OverlapMultiByChannel(
-                                OverlapResults, Origin, FQuat::Identity, ECC_Visibility, ChainSphereShape, OverlapParams
-                            );
+                            bool bFoundChainTarget = GetWorld()->OverlapMultiByChannel(OverlapResults, Origin, FQuat::Identity, ECC_Visibility, ChainSphereShape, OverlapParams);
 
                             if (bFoundChainTarget)
                             {
+                                int32 ChainedCount = 0;
                                 for (const FOverlapResult& Result : OverlapResults)
                                 {
+                                    if (ChainedCount >= MaxChainCount) break; // 스탯 포인트만큼 제한
+
                                     AActor* ChainTarget = Result.GetActor();
                                     if (ChainTarget && ChainTarget->ActorHasTag(FName("Monster")))
                                     {
@@ -513,33 +417,25 @@ void AVoidTriggerCharacter::Fire()
                                         {
                                             FVector EffectLocation = ChainTarget->GetActorLocation();
                                             FRotator EffectRotation = (Origin - EffectLocation).Rotation();
-
-                                            UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-                                                GetWorld(), 
-                                                HitImpactEffect, 
-                                                EffectLocation, 
-                                                EffectRotation
-                                            );
+                                            UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitImpactEffect, EffectLocation, EffectRotation);
                                         }
 
                                         if (BulletTracerEffect)
                                         {
-                                            UNiagaraComponent* BounceTracerComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-                                                GetWorld(), BulletTracerEffect, Origin
-                                            );
-
+                                            UNiagaraComponent* BounceTracerComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BulletTracerEffect, Origin);
                                             if (BounceTracerComp)
                                             {
                                                 BounceTracerComp->SetVariableVec3(FName("User.BeamEnd"), ChainTarget->GetActorLocation());
                                             }
                                         }
-                                        break; 
+                                        ChainedCount++; 
                                     }
                                 }
                             }
                         }
 
-                        if (bHasBlackHoleMod && FMath::FRand() <= 1.00f)
+                        // ★ 블랙홀 수류탄: 레벨(포인트)에 비례한 확률 적용
+                        if (bHasBlackHoleMod && FMath::FRand() <= BlackHoleChance)
                         {
                            if (BlackHoleClass) 
                            {
@@ -564,36 +460,18 @@ void AVoidTriggerCharacter::Fire()
 
                         if (ExplosionEffect)
                         {
-                            UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-                                GetWorld(),
-                                ExplosionEffect,
-                                HitResult.ImpactPoint,
-                                FRotator::ZeroRotator
-                            );
+                            UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ExplosionEffect, HitResult.ImpactPoint, FRotator::ZeroRotator);
                         }
 
                         if (ExplosionSound)
                         {
-                            UGameplayStatics::PlaySoundAtLocation(
-                                this,
-                                ExplosionSound,
-                                HitResult.ImpactPoint
-                            );
+                            UGameplayStatics::PlaySoundAtLocation(this, ExplosionSound, HitResult.ImpactPoint);
                         }
 
                         TArray<AActor*> IgnoredActors;
                         IgnoredActors.Add(this);
 
-                        UGameplayStatics::ApplyRadialDamage(
-                            GetWorld(),
-                            ExplosionDamage,
-                            HitResult.ImpactPoint,
-                            ExplosionRadius,
-                            UDamageType::StaticClass(),
-                            IgnoredActors,
-                            this,
-                            GetController()
-                        );
+                        UGameplayStatics::ApplyRadialDamage(GetWorld(), ExplosionDamage, HitResult.ImpactPoint, ExplosionRadius, UDamageType::StaticClass(), IgnoredActors, this, GetController());
                     }
                 }
             }
@@ -602,20 +480,12 @@ void AVoidTriggerCharacter::Fire()
                 if (BulletTracerEffect)
                 {
                     FRotator MissRotation = (TraceEnd - VisualStartLocation).Rotation();
-
-                    UNiagaraComponent* MissTracerComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-                        GetWorld(),
-                        BulletTracerEffect,
-                        VisualStartLocation,
-                        MissRotation
-                    );
-
+                    UNiagaraComponent* MissTracerComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BulletTracerEffect, VisualStartLocation, MissRotation);
                     if (MissTracerComp)
                     {
                         MissTracerComp->SetVariableVec3(FName("User.BeamEnd"), TraceEnd);
                     }
                 }
-
                 break; 
             }
         }
@@ -646,7 +516,6 @@ void AVoidTriggerCharacter::OnMagnetOverlap(UPrimitiveComponent* OverlappedCompo
        {
           Item->StartFlying();
        }
-        
        if (AVoidTriggerGold* Gold = Cast<AVoidTriggerGold>(OtherActor))
        {
           Gold->StartFlying();
@@ -657,8 +526,6 @@ void AVoidTriggerCharacter::OnMagnetOverlap(UPrimitiveComponent* OverlappedCompo
 void AVoidTriggerCharacter::GainExp(float Amount)
 {
     CurrentExp += Amount;
-    UE_LOG(LogTemp, Log, TEXT("경험치 획득: %f (현재: %f / 목표: %f)"), Amount, CurrentExp, MaxExp);
-
     if (CurrentExp >= MaxExp)
     {
        LevelUp();
@@ -671,15 +538,11 @@ void AVoidTriggerCharacter::LevelUp()
     {
        float HealAmount = MaxHP * LevelUpHealRate;
        CurrentHP = FMath::Min(MaxHP, CurrentHP + HealAmount);
-       UE_LOG(LogTemp, Warning, TEXT("💊 전장 응급처치 발동! %f 체력 회복 (현재: %f)"), HealAmount, CurrentHP);
     }
     
     CurrentExp -= MaxExp;
     Level++;
     MaxExp *= 1.2f;
-
-    UE_LOG(LogTemp, Error, TEXT("★ 레벨업! 현재 레벨: %d ★"), Level);
-
     PendingLevelUps++;
 
     if (PendingLevelUps == 1)
@@ -718,7 +581,6 @@ void AVoidTriggerCharacter::StartReload()
     if (bIsReloading || CurrentAmmo == MaxAmmo) return;
 
     bIsReloading = true;
-    UE_LOG(LogTemp, Warning, TEXT("재장전 시작..."));
 
     if (ReloadMontage)
     {
@@ -727,7 +589,6 @@ void AVoidTriggerCharacter::StartReload()
           float MontageLength = ReloadMontage->GetPlayLength();
           float PlayRate = MontageLength / ReloadTime;
           AnimInstance->Montage_Play(ReloadMontage, PlayRate);
-          UE_LOG(LogTemp, Log, TEXT("재장전 애니메이션 배속: %f"), PlayRate);
        }
     }
     FTimerHandle ReloadTimerHandle;
@@ -738,16 +599,11 @@ void AVoidTriggerCharacter::FinishReload()
 {
     bIsReloading = false;
     CurrentAmmo = MaxAmmo; 
-    UE_LOG(LogTemp, Log, TEXT("재장전 완료!"));
 }
 
 float AVoidTriggerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-    if (bIsInvincible)
-    {
-       UE_LOG(LogTemp, Warning, TEXT("무적 상태! 데미지 무시"));
-       return 0.0f;
-    }
+    if (bIsInvincible) return 0.0f;
     
     float ReducedDamage = DamageAmount * (1.0f - DamageReductionRate);
     
@@ -757,36 +613,28 @@ float AVoidTriggerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& 
        bCanRevive = false; 
        bIsInvincible = true; 
 
-       UE_LOG(LogTemp, Error, TEXT("🔥 불굴의 의지 발동! 무적 시간을 얻습니다."));
-
        GetWorldTimerManager().SetTimer(InvincibleTimer, this, &AVoidTriggerCharacter::EndInvincibility, ReviveInvincibleDuration, false);
 
        FTimerHandle ReviveTimerHandle;
        GetWorldTimerManager().SetTimer(ReviveTimerHandle, [this]() {
           bCanRevive = true;
-          UE_LOG(LogTemp, Warning, TEXT("🛡️ 불굴의 의지 재사용 가능!"));
        }, CurrentReviveCooldown, false);
 
        return 0.0f; 
     }
     
     float ActualDamage = Super::TakeDamage(ReducedDamage, DamageEvent, EventInstigator, DamageCauser);
-
     CurrentHP -= ActualDamage;
-    UE_LOG(LogTemp, Warning, TEXT("플레이어 피격! 원본데미지: %f -> 적용데미지: %f / 남은체력: %f"), DamageAmount, ActualDamage, CurrentHP);
 
     if (CurrentHP <= 0.f)
     {
        Die();
     }
-
     return ActualDamage;
 }
 
 void AVoidTriggerCharacter::Die()
 {
-    UE_LOG(LogTemp, Error, TEXT("게임 오버!"));
-    
     APlayerController* PC = Cast<APlayerController>(GetController());
     if (!PC) return;
 
@@ -814,39 +662,29 @@ void AVoidTriggerCharacter::ApplyLevelUpUpgrade(ELevelUpUpgradeType UpgradeType)
     case ELevelUpUpgradeType::ReloadSpeed:
        ReloadTime = FMath::Max(0.2f, ReloadTime - 0.2f);
        break;
-
     case ELevelUpUpgradeType::MagazineSize:
        MaxAmmo += 5;
        CurrentAmmo += 5; 
        CurrentAmmo = FMath::Clamp(CurrentAmmo, 0, MaxAmmo);
        break;
-
     case ELevelUpUpgradeType::Damage:
        Damage += 5.f;
        break;
-
     case ELevelUpUpgradeType::MoveSpeed:
        MoveSpeed += 50.f;
-       if (!bIsSprinting) // 달리기 중이 아닐 때만 즉시 적용
-       {
-           GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
-       }
+       if (!bIsSprinting) GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
        break;
-
     case ELevelUpUpgradeType::MagnetRange:
        if (MagnetCollision)
        {
-          float NewRadius = MagnetCollision->GetScaledSphereRadius() + 75.f;
-          MagnetCollision->SetSphereRadius(NewRadius);
+          MagnetCollision->SetSphereRadius(MagnetCollision->GetScaledSphereRadius() + 75.f);
        }
        break;
-
     case ELevelUpUpgradeType::MaxHP:
        MaxHP += 20.f;
        CurrentHP += 20.f;
        CurrentHP = FMath::Clamp(CurrentHP, 0.f, MaxHP);
        break;
-       
     default:
        break;
     }
@@ -907,24 +745,19 @@ TArray<ELevelUpUpgradeType> AVoidTriggerCharacter::GetRandomUpgrades(int32 Count
        SelectedUpgrades.Add(Picked);
        LotteryPool.Remove(Picked); 
     }
-
     return SelectedUpgrades;
 }
 
-// ==========================================
-// 스테미나 및 달리기 관련 함수
-// ==========================================
 void AVoidTriggerCharacter::StartSprint()
 {
-	if (CurrentStamina > 0.f)
-	{
-		bIsSprinting = true;
-		if (GetCharacterMovement())
-		{
-			// ★ 핵심 변경: 현재 걷기 속도에 배율(1.5배)을 곱해서 적용합니다.
-			GetCharacterMovement()->MaxWalkSpeed = MoveSpeed * SprintMultiplier;
-		}
-	}
+    if (CurrentStamina > 0.f)
+    {
+       bIsSprinting = true;
+       if (GetCharacterMovement())
+       {
+          GetCharacterMovement()->MaxWalkSpeed = MoveSpeed * SprintMultiplier;
+       }
+    }
 }
 
 void AVoidTriggerCharacter::StopSprint()
@@ -945,7 +778,6 @@ float AVoidTriggerCharacter::GetStaminaPercent() const
 void AVoidTriggerCharacter::EndInvincibility()
 {
     bIsInvincible = false;
-    UE_LOG(LogTemp, Warning, TEXT("무적 시간 종료!"));
 }
 
 void AVoidTriggerCharacter::TogglePause(const FInputActionValue& Value)
@@ -999,108 +831,89 @@ void AVoidTriggerCharacter::TogglePause(const FInputActionValue& Value)
     }
 }
 
-// ==========================================
-// 0.3초마다 화염 장판을 바닥에 까는 함수
-// ==========================================
 void AVoidTriggerCharacter::SpawnFireTrail()
 {
-	// 에디터에서 장판 클래스를 안 넣었으면 에러 방지
-	if (!FireFloorClass) return;
+    if (!FireFloorClass) return;
 
-	// 캐릭터가 가만히 서 있는 게 아니라 실제로 이동 중일 때만 생성
-	if (GetCharacterMovement()->Velocity.SizeSquared2D() > 10.f)
-	{
-		// 현재 캐릭터 위치를 가져옴
-		FVector SpawnLocation = GetActorLocation();
-        
-		// 캐릭터의 원점이 보통 몸통 중앙(캡슐 절반)이므로, 발밑으로 살짝 내려줍니다.
-		SpawnLocation.Z -= 80.f; 
-        
-		// 장판 생성!
-		GetWorld()->SpawnActor<AActor>(FireFloorClass, SpawnLocation, FRotator::ZeroRotator);
-	}
+    if (GetCharacterMovement()->Velocity.SizeSquared2D() > 10.f)
+    {
+       FVector SpawnLocation = GetActorLocation();
+       SpawnLocation.Z -= 80.f; 
+       GetWorld()->SpawnActor<AActor>(FireFloorClass, SpawnLocation, FRotator::ZeroRotator);
+    }
 }
 
-void AVoidTriggerCharacter::EquipStartingWeapon(EStartingWeaponType WeaponType)
+void AVoidTriggerCharacter::InitializeArmoryWeapons(const TMap<EStartingWeaponType, int32>& ArmoryStats)
 {
-    switch (WeaponType)
+    SpecialWeaponLevels = ArmoryStats;
+
+    for (const auto& Stat : ArmoryStats)
     {
-    case EStartingWeaponType::PierceShot:
-       PierceCount += 1;
-       UE_LOG(LogTemp, Warning, TEXT("[무기고] 관통탄 장착 완료!"));
-       break;
+        EStartingWeaponType WeaponType = Stat.Key;
+        int32 WeaponLevel = Stat.Value; 
 
-    case EStartingWeaponType::ScatterShot:
-       ProjectileCount += 1; 
-       UE_LOG(LogTemp, Warning, TEXT("[무기고] 산탄 사격 장착 완료!"));
-       break;
+        if (WeaponLevel <= 0) continue;
 
-    case EStartingWeaponType::ExplosiveShot:
-       ExplosionRadius = 250.f;
-       ExplosionDamage = 15.f;
-       UE_LOG(LogTemp, Warning, TEXT("[무기고] 폭발탄 장착 완료!"));
-       break;
-       
-    case EStartingWeaponType::ChainLightning:
-       bIsChainLightning = true;
-       UE_LOG(LogTemp, Warning, TEXT("[무기고] 도탄 장착 완료!"));
-       break;
-       
-    case EStartingWeaponType::BlackHoleGrenade:
-       bHasBlackHoleMod = true;
-       UE_LOG(LogTemp, Warning, TEXT("[무기고] 블랙홀 장착 완료!"));
-       break;
-    	
-    case EStartingWeaponType::AcidFloor:
-    	bHasAcidFloorMod = true;
-    	GetWorldTimerManager().SetTimer(FireTrailTimer, this, &AVoidTriggerCharacter::SpawnFireTrail, 0.3f, true);
-    	UE_LOG(LogTemp, Warning, TEXT("[무기고] 산성 화염 장판 장착 완료!"));
-    	break;
-    	
-    case EStartingWeaponType::AutoDrone:
-    	if (DroneClass)
-    	{
-    		FVector SpawnLocation = GetActorLocation();
+        switch (WeaponType)
+        {
+        case EStartingWeaponType::PierceShot:
+            PierceCount += WeaponLevel;
+            break;
 
-    		AVoidDrone* SpawnedDrone = GetWorld()->SpawnActor<AVoidDrone>(
-			   DroneClass,
-			   SpawnLocation,
-			   FRotator::ZeroRotator
-			);
+        case EStartingWeaponType::ScatterShot:
+            ProjectileCount += WeaponLevel;
+            break;
 
-    		if (SpawnedDrone)
-    		{
-    			SpawnedDrone->InitializeDrone(this);
-    			SpawnedDrone->PrimaryActorTick.TickGroup = TG_PostUpdateWork;
+        case EStartingWeaponType::ExplosiveShot:
+            ExplosionRadius = 100.f + (50.f * WeaponLevel);
+            ExplosionDamage = 15.f * WeaponLevel;
+            break;
+           
+        case EStartingWeaponType::ChainLightning:
+            bIsChainLightning = true;
+            MaxChainCount = WeaponLevel;
+            break;
+           
+        case EStartingWeaponType::BlackHoleGrenade:
+            bHasBlackHoleMod = true;
+            BlackHoleChance = 0.03f * WeaponLevel;
+            break;
+            
+        case EStartingWeaponType::AcidFloor:
+            bHasAcidFloorMod = true;
+            AcidFloorDamage = 10.f * WeaponLevel;
+            GetWorldTimerManager().SetTimer(FireTrailTimer, this, &AVoidTriggerCharacter::SpawnFireTrail, 0.3f, true);
+            break;
+            
+        case EStartingWeaponType::AutoDrone:
+        	DroneAttackRate = FMath::Max(0.5f, 2.0f - (0.3f * WeaponLevel));
 
-    			// =========================================================
-    			// ⭐ 수정된 부분: 메시가 아닌 카메라를 찾아서 부착합니다.
-    			// =========================================================
-    			UCameraComponent* PlayerCamera = FindComponentByClass<UCameraComponent>();
-          
-    			if (PlayerCamera)
-    			{
-    				SpawnedDrone->AttachToComponent(
-					   PlayerCamera,
-					   FAttachmentTransformRules::SnapToTargetNotIncludingScale
-					);
-    			}
-    			else
-    			{
-    				// 만약 카메라를 찾지 못했을 경우의 예외 처리
-    				SpawnedDrone->AttachToComponent(
-					   GetMesh(),
-					   FAttachmentTransformRules::SnapToTargetNotIncludingScale
-					);
-    			}
+        	if (DroneClass)
+        	{
+        		FVector SpawnLocation = GetActorLocation();
+        		AVoidDrone* SpawnedDrone = GetWorld()->SpawnActor<AVoidDrone>(DroneClass, SpawnLocation, FRotator::ZeroRotator);
+                
+        		if (SpawnedDrone)
+        		{
+        			// 이제 드론이 초기화될 때 바뀐 공속(DroneAttackRate)을 정상적으로 가져갑니다.
+        			SpawnedDrone->InitializeDrone(this);
+        			SpawnedDrone->PrimaryActorTick.TickGroup = TG_PostUpdateWork;
 
-    			// 드론의 HoverOffset 변수를 사용하여 위치 세팅
-    			SpawnedDrone->SetActorRelativeLocation(SpawnedDrone->HoverOffset);
-    			SpawnedDrone->SetActorRelativeRotation(FRotator::ZeroRotator);
+        			UCameraComponent* PlayerCamera = FindComponentByClass<UCameraComponent>();
+        			if (PlayerCamera)
+        			{
+        				SpawnedDrone->AttachToComponent(PlayerCamera, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+        			}
+        			else
+        			{
+        				SpawnedDrone->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+        			}
 
-    			UE_LOG(LogTemp, Warning, TEXT("드론 부착 완료"));
-    		}
-    	}
-    	break;
+        			SpawnedDrone->SetActorRelativeLocation(SpawnedDrone->HoverOffset);
+        			SpawnedDrone->SetActorRelativeRotation(FRotator::ZeroRotator);
+        		}
+        	}
+        	break;
+        }
     }
 }
