@@ -18,6 +18,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "MySaveGame.h"
+#include "VoidDrone.h"
 #include "VoidTriggerGold.h"
 #include "VoidTriggerGameInstance.h"
 #include "Engine/OverlapResult.h"
@@ -998,6 +999,28 @@ void AVoidTriggerCharacter::TogglePause(const FInputActionValue& Value)
     }
 }
 
+// ==========================================
+// 0.3초마다 화염 장판을 바닥에 까는 함수
+// ==========================================
+void AVoidTriggerCharacter::SpawnFireTrail()
+{
+	// 에디터에서 장판 클래스를 안 넣었으면 에러 방지
+	if (!FireFloorClass) return;
+
+	// 캐릭터가 가만히 서 있는 게 아니라 실제로 이동 중일 때만 생성
+	if (GetCharacterMovement()->Velocity.SizeSquared2D() > 10.f)
+	{
+		// 현재 캐릭터 위치를 가져옴
+		FVector SpawnLocation = GetActorLocation();
+        
+		// 캐릭터의 원점이 보통 몸통 중앙(캡슐 절반)이므로, 발밑으로 살짝 내려줍니다.
+		SpawnLocation.Z -= 80.f; 
+        
+		// 장판 생성!
+		GetWorld()->SpawnActor<AActor>(FireFloorClass, SpawnLocation, FRotator::ZeroRotator);
+	}
+}
+
 void AVoidTriggerCharacter::EquipStartingWeapon(EStartingWeaponType WeaponType)
 {
     switch (WeaponType)
@@ -1027,5 +1050,57 @@ void AVoidTriggerCharacter::EquipStartingWeapon(EStartingWeaponType WeaponType)
        bHasBlackHoleMod = true;
        UE_LOG(LogTemp, Warning, TEXT("[무기고] 블랙홀 장착 완료!"));
        break;
+    	
+    case EStartingWeaponType::AcidFloor:
+    	bHasAcidFloorMod = true;
+    	GetWorldTimerManager().SetTimer(FireTrailTimer, this, &AVoidTriggerCharacter::SpawnFireTrail, 0.3f, true);
+    	UE_LOG(LogTemp, Warning, TEXT("[무기고] 산성 화염 장판 장착 완료!"));
+    	break;
+    	
+    case EStartingWeaponType::AutoDrone:
+    	if (DroneClass)
+    	{
+    		FVector SpawnLocation = GetActorLocation();
+
+    		AVoidDrone* SpawnedDrone = GetWorld()->SpawnActor<AVoidDrone>(
+			   DroneClass,
+			   SpawnLocation,
+			   FRotator::ZeroRotator
+			);
+
+    		if (SpawnedDrone)
+    		{
+    			SpawnedDrone->InitializeDrone(this);
+    			SpawnedDrone->PrimaryActorTick.TickGroup = TG_PostUpdateWork;
+
+    			// =========================================================
+    			// ⭐ 수정된 부분: 메시가 아닌 카메라를 찾아서 부착합니다.
+    			// =========================================================
+    			UCameraComponent* PlayerCamera = FindComponentByClass<UCameraComponent>();
+          
+    			if (PlayerCamera)
+    			{
+    				SpawnedDrone->AttachToComponent(
+					   PlayerCamera,
+					   FAttachmentTransformRules::SnapToTargetNotIncludingScale
+					);
+    			}
+    			else
+    			{
+    				// 만약 카메라를 찾지 못했을 경우의 예외 처리
+    				SpawnedDrone->AttachToComponent(
+					   GetMesh(),
+					   FAttachmentTransformRules::SnapToTargetNotIncludingScale
+					);
+    			}
+
+    			// 드론의 HoverOffset 변수를 사용하여 위치 세팅
+    			SpawnedDrone->SetActorRelativeLocation(SpawnedDrone->HoverOffset);
+    			SpawnedDrone->SetActorRelativeRotation(FRotator::ZeroRotator);
+
+    			UE_LOG(LogTemp, Warning, TEXT("드론 부착 완료"));
+    		}
+    	}
+    	break;
     }
 }

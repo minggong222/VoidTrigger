@@ -364,4 +364,18 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Combat|Special")
 	TSubclassOf<AActor> BlackHoleClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Special")
+	bool bHasAcidFloorMod = false; // 장착 여부
+
+	UPROPERTY(EditAnywhere, Category = "Combat|Special")
+	TSubclassOf<AActor> FireFloorClass; // 스폰할 장판 블루프린트 클래스
+
+	FTimerHandle FireTrailTimer;
+    
+	// 바닥에 장판을 까는 함수
+	void SpawnFireTrail();
+	
+	UPROPERTY(EditAnywhere, Category = "Combat|Special")
+	TSubclassOf<class AVoidDrone> DroneClass;
 };
