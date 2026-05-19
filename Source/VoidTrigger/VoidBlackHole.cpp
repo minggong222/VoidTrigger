@@ -4,7 +4,8 @@
 #include "VoidBlackHole.h"
 
 #include "Engine/OverlapResult.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 // Sets default values
 AVoidBlackHole::AVoidBlackHole()
 {
@@ -18,7 +19,13 @@ AVoidBlackHole::AVoidBlackHole()
 void AVoidBlackHole::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	GetWorldTimerManager().SetTimer(
+		DamageTimerHandle, 
+		this, 
+		&AVoidBlackHole::DealDamageToTrappedEnemies, 
+		DamageTickRate, 
+		true
+	);
 }
 
 // Called every frame
@@ -57,7 +64,7 @@ void AVoidBlackHole::Tick(float DeltaTime)
 			AActor* TargetActor = Result.GetActor();
             
 			// 몬스터 태그가 있는 대상만 끌어당김
-			if (TargetActor && TargetActor->ActorHasTag(FName("Monster")))
+			if (TargetActor && TargetActor->ActorHasTag(FName("Monster")) && !TargetActor->ActorHasTag(FName("Flying")))
 			{
 				FVector TargetLocation = TargetActor->GetActorLocation();
                 
@@ -67,6 +74,53 @@ void AVoidBlackHole::Tick(float DeltaTime)
 				// 부드럽게 끌려오도록 위치 계산 (장애물/벽에 막히도록 Sweep 옵션 true)
 				FVector NewLocation = TargetLocation + (PullDirection * PullSpeed * DeltaTime);
 				TargetActor->SetActorLocation(NewLocation, true);
+			}
+		}
+	}
+}
+
+
+void AVoidBlackHole::DealDamageToTrappedEnemies()
+{
+	FVector CenterLocation = GetActorLocation();
+    
+	// 기존 Tick에 있던 끌어당기기 반경과 똑같이 맞춰줍니다 (예: 1000.f)
+	float DamageRadius = 1000.f; 
+
+	FCollisionShape SphereShape = FCollisionShape::MakeSphere(DamageRadius);
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	// 반경 내의 액터 탐색
+	bool bFoundActors = GetWorld()->OverlapMultiByChannel(
+		OverlapResults,
+		CenterLocation,
+		FQuat::Identity,
+		ECC_Visibility,
+		SphereShape,
+		Params
+	);
+
+	if (bFoundActors)
+	{
+		// 0.5초마다 들어가야 할 실제 데미지 계산 (초당 15뎀 * 0.5 = 1타격당 7.5뎀)
+		float ActualTickDamage = DamagePerSecond * DamageTickRate;
+
+		for (const FOverlapResult& Result : OverlapResults)
+		{
+			AActor* TargetActor = Result.GetActor();
+            
+			// 몬스터에게만 데미지 적용
+			if (TargetActor && TargetActor->ActorHasTag(FName("Monster")))
+			{
+				UGameplayStatics::ApplyDamage(
+					TargetActor, 
+					ActualTickDamage, 
+					nullptr, // 무기를 쏜 주인을 넘겨줄 수도 있지만, 블랙홀 자체 데미지이므로 일단 nullptr
+					this, 
+					UDamageType::StaticClass()
+				);
 			}
 		}
 	}

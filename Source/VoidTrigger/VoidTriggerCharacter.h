@@ -96,7 +96,7 @@ protected:
 	class UInputAction* ShootAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	class UInputAction* DashAction;
+	class UInputAction* SprintAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* PauseAction;
@@ -163,24 +163,26 @@ protected:
 
 	void Die();
 	
-	// --- 대시(Dash) 시스템 ---
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Dash")
-	float DashStrength = 3000.0f; // 대시의 세기 (밀어내는 힘)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Sprint")
+	float SprintMultiplier = 1.5f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Dash")
-	float DashCooldown = 5.0f; // 대시 재사용 대기시간
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Sprint")
+	float MaxStamina = 100.0f; // 최대 스테미나
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Dash")
-	float InvincibleDuration = 0.5f; // 대시 중 무적 시간 (0.5초면 충분히 깁니다)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Sprint")
+	float CurrentStamina = 100.0f; // 현재 스테미나
 
-	// 상태 체크 변수
-	bool bCanDash = true;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Sprint")
+	float StaminaConsumeRate = 30.0f; // 초당 스테미나 소모량
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Sprint")
+	float StaminaRegenRate = 15.0f; // 초당 스테미나 회복량
+
+	bool bIsSprinting = false;
+    
+	// (부활 무적 시간에 사용되므로 삭제하지 않고 남겨둠)
 	bool bIsInvincible = false;
-
-	// 타이머 핸들
-	FTimerHandle DashCooldownTimer;
 	FTimerHandle InvincibleTimer;
-	
 public:
 	// --- 성장 시스템 ---
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Growth")
@@ -326,14 +328,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player|Growth")
 	TArray<ELevelUpUpgradeType> GetRandomUpgrades(int32 Count);
 	
-	UFUNCTION(BlueprintPure, Category = "Movement|Dash")
-	float GetDashCooldownPercent() const;
-	
 	void TogglePause(const FInputActionValue& Value);
 
-	void Dash();
-	void ResetDash();
 	void EndInvincibility();
+
+	void StartSprint();
+	void StopSprint();
+    
+	// UI 프로그레스 바에 바인딩할 함수
+	UFUNCTION(BlueprintPure, Category = "Movement|Sprint")
+	float GetStaminaPercent() const;
+	
 	
 	void EquipStartingWeapon(EStartingWeaponType WeaponType);
 	
