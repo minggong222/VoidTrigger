@@ -12,6 +12,7 @@ class VOIDTRIGGER_API UMySaveGame : public USaveGame
 	GENERATED_BODY()
 
 public:
+	UMySaveGame();
 	// 보유 중인 전체 재화
 	UPROPERTY(BlueprintReadWrite, Category = "SaveData")
 	int32 TotalGold = 0;
@@ -41,4 +42,21 @@ public:
 	// 무기고 세팅을 한 번이라도 저장했는지 판별하는 스위치
 	UPROPERTY(BlueprintReadWrite, Category = "SaveData|Armory")
 	bool bHasSavedStartingTrait = false;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "SaveData|Armory")
+	TMap<EStartingWeaponType, bool> UnlockedWeapons;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "SaveData|ArmoryUnlock")
+	int32 TotalMonsterKills = 0;
+
+	UPROPERTY(BlueprintReadWrite, Category = "SaveData|ArmoryUnlock")
+	int32 TotalCriticalHits = 0;
+	
+	// 세로 티어 세트가 완성된 개수를 세어 총 획득 포인트를 계산 (최대 5개)
+	UFUNCTION(BlueprintPure, Category = "SaveData|Armory")
+	int32 GetTotalEarnedArmoryPoints() const;
+
+	// 총 획득 포인트에서 이미 무기들에 투자한 포인트를 빼고 남은 가용 포인트 계산
+	UFUNCTION(BlueprintPure, Category = "SaveData|Armory")
+	int32 GetAvailableArmoryPoints() const;
 };

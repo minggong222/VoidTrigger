@@ -171,6 +171,18 @@ void AVoidTriggerCharacter::BeginPlay()
           }
        }
 
+    	// 영구 누적 데이터 동기화
+    	SessionTotalKills = SaveData->TotalMonsterKills;
+    	SessionTotalCrits = SaveData->TotalCriticalHits;
+
+    	// 이미 해금된 무기인지 체크 (중복 저장 방지)
+    	if (bool* bUnlocked = SaveData->UnlockedWeapons.Find(EStartingWeaponType::ScatterShot))   bAlreadyUnlocked_Scatter = *bUnlocked;
+    	if (bool* bUnlocked = SaveData->UnlockedWeapons.Find(EStartingWeaponType::ExplosiveShot)) bAlreadyUnlocked_Explosive = *bUnlocked;
+    	if (bool* bUnlocked = SaveData->UnlockedWeapons.Find(EStartingWeaponType::AcidFloor))     bAlreadyUnlocked_Acid = *bUnlocked;
+    	if (bool* bUnlocked = SaveData->UnlockedWeapons.Find(EStartingWeaponType::AutoDrone))     bAlreadyUnlocked_Drone = *bUnlocked;
+    	if (bool* bUnlocked = SaveData->UnlockedWeapons.Find(EStartingWeaponType::ChainLightning)) bAlreadyUnlocked_Chain = *bUnlocked;
+    	if (bool* bUnlocked = SaveData->UnlockedWeapons.Find(EStartingWeaponType::BlackHoleGrenade)) bAlreadyUnlocked_BlackHole = *bUnlocked;
+    	
        // 무기고 영구 저장 스탯 일괄 적용
        if (SaveData->bHasSavedStartingTrait && SaveData->SavedArmoryWeaponStats.Num() > 0)
        {
@@ -197,7 +209,7 @@ void AVoidTriggerCharacter::BeginPlay()
 void AVoidTriggerCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
+	
     if (bIsSprinting && GetCharacterMovement()->Velocity.SizeSquared2D() > 0.f)
     {
         CurrentStamina -= StaminaConsumeRate * DeltaTime;
@@ -215,6 +227,19 @@ void AVoidTriggerCharacter::Tick(float DeltaTime)
             CurrentStamina = FMath::Min(MaxStamina, CurrentStamina + (StaminaRegenRate * DeltaTime));
         }
     }
+	
+	// ==========================================
+	// 업적 카운팅 (시간 누적)
+	// ==========================================
+	CurrentMatch_SurvivalTime += DeltaTime;
+
+	if (bIsSprinting && GetCharacterMovement()->Velocity.SizeSquared2D() > 10.f)
+	{
+		CurrentMatch_SprintDuration += DeltaTime;
+	}
+
+	// 매 프레임 업적 체크
+	CheckAndSaveArmoryUnlocks();
 }
 
 void AVoidTriggerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -377,10 +402,13 @@ void AVoidTriggerCharacter::Fire()
                     if (FMath::FRand() <= CritChance)
                     {
                         FinalDamage *= CritMultiplier;
+                    	SessionTotalCrits++;
                     }
 
                     UGameplayStatics::ApplyDamage(HitActor, FinalDamage, GetController(), this, UDamageType::StaticClass());
-
+                	CurrentMatch_TotalDamageDealt += FinalDamage;
+                	
+                	
                     if (HitActor->ActorHasTag(FName("Monster")))
                     {
                         if (HitImpactEffect)
@@ -914,6 +942,96 @@ void AVoidTriggerCharacter::InitializeArmoryWeapons(const TMap<EStartingWeaponTy
         		}
         	}
         	break;
+        }
+    }
+}
+
+void AVoidTriggerCharacter::NotifyMonsterKill(AActor* KilledMonster)
+{
+    if (!KilledMonster) return;
+
+    // 1. 총 킬 수 누적
+    SessionTotalKills++;
+
+    // 2. 근접 처치(5m = 500 units) 체크
+    float Distance = FVector::Dist(GetActorLocation(), KilledMonster->GetActorLocation());
+    if (Distance <= 500.f)
+    {
+        CurrentMatch_CloseKills++;
+    }
+
+    // 킬이 발생했을 때도 체크
+    CheckAndSaveArmoryUnlocks();
+}
+
+void AVoidTriggerCharacter::CheckAndSaveArmoryUnlocks()
+{
+    bool bNeedToSave = false;
+
+    // 1. 산탄 사격 (5m 이내 250마리)
+    if (!bAlreadyUnlocked_Scatter && CurrentMatch_CloseKills >= 250)
+    {
+        bAlreadyUnlocked_Scatter = true;
+        bNeedToSave = true;
+        UE_LOG(LogTemp, Error, TEXT("🎉 업적 달성! [산탄 사격] 해금!"));
+    }
+
+    // 2. 폭발탄 (단일 판 누적 데미지 50,000)
+    if (!bAlreadyUnlocked_Explosive && CurrentMatch_TotalDamageDealt >= 50000.f)
+    {
+        bAlreadyUnlocked_Explosive = true;
+        bNeedToSave = true;
+        UE_LOG(LogTemp, Error, TEXT("🎉 업적 달성! [폭발탄] 해금!"));
+    }
+
+    // 3. 화염 장판 (달리기 6분)
+    if (!bAlreadyUnlocked_Acid && CurrentMatch_SprintDuration >= 360.f)
+    {
+        bAlreadyUnlocked_Acid = true;
+        bNeedToSave = true;
+        UE_LOG(LogTemp, Error, TEXT("🎉 업적 달성! [산성 화염 장판] 해금!"));
+    }
+
+    // 4. 자동공격 드론 (10분 생존)
+    if (!bAlreadyUnlocked_Drone && CurrentMatch_SurvivalTime >= 600.f)
+    {
+        bAlreadyUnlocked_Drone = true;
+        bNeedToSave = true;
+        UE_LOG(LogTemp, Error, TEXT("🎉 업적 달성! [자동공격 드론] 해금!"));
+    }
+
+    // 5. 체인 라이트닝 (치명타 누적 1,500회)
+    if (!bAlreadyUnlocked_Chain && SessionTotalCrits >= 1500)
+    {
+        bAlreadyUnlocked_Chain = true;
+        bNeedToSave = true;
+        UE_LOG(LogTemp, Error, TEXT("🎉 업적 달성! [체인 라이트닝] 해금!"));
+    }
+
+    // 6. 블랙홀 수류탄 (킬 누적 5,000마리)
+    if (!bAlreadyUnlocked_BlackHole && SessionTotalKills >= 5000)
+    {
+        bAlreadyUnlocked_BlackHole = true;
+        bNeedToSave = true;
+        UE_LOG(LogTemp, Error, TEXT("🎉 업적 달성! [블랙홀 수류탄] 해금!"));
+    }
+
+    // 달성한 업적이 있어서 갱신이 필요하다면 세이브 파일에 덮어쓰기
+    if (bNeedToSave)
+    {
+        if (UMySaveGame* SaveData = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("Save01"), 0)))
+        {
+            SaveData->UnlockedWeapons.Add(EStartingWeaponType::ScatterShot, bAlreadyUnlocked_Scatter);
+            SaveData->UnlockedWeapons.Add(EStartingWeaponType::ExplosiveShot, bAlreadyUnlocked_Explosive);
+            SaveData->UnlockedWeapons.Add(EStartingWeaponType::AcidFloor, bAlreadyUnlocked_Acid);
+            SaveData->UnlockedWeapons.Add(EStartingWeaponType::AutoDrone, bAlreadyUnlocked_Drone);
+            SaveData->UnlockedWeapons.Add(EStartingWeaponType::ChainLightning, bAlreadyUnlocked_Chain);
+            SaveData->UnlockedWeapons.Add(EStartingWeaponType::BlackHoleGrenade, bAlreadyUnlocked_BlackHole);
+
+            SaveData->TotalMonsterKills = SessionTotalKills;
+            SaveData->TotalCriticalHits = SessionTotalCrits;
+
+            UGameplayStatics::SaveGameToSlot(SaveData, TEXT("Save01"), 0);
         }
     }
 }

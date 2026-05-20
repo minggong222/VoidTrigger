@@ -111,6 +111,12 @@ void AVoidTriggerEnemy::Deactivate()
     }
 
     AVoidTriggerCharacter* Player = Cast<AVoidTriggerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	
+	if (Player)
+	{
+		Player->NotifyMonsterKill(this);
+	}
+	
     float GoldDropBonus = Player ? Player->ResourceDropBonus : 0.0f;
     float SpecialBonus = Player ? Player->SpecialDropBonus : 0.0f;
 

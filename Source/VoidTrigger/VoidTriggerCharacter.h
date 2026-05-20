@@ -183,6 +183,31 @@ protected:
 	// (부활 무적 시간에 사용되므로 삭제하지 않고 남겨둠)
 	bool bIsInvincible = false;
 	FTimerHandle InvincibleTimer;
+	
+	// ==========================================
+	// 업적 카운팅용 임시 변수들
+	// ==========================================
+    
+	// 단일 판 데이터
+	int32 CurrentMatch_CloseKills = 0;
+	float CurrentMatch_TotalDamageDealt = 0.f;
+	float CurrentMatch_SprintDuration = 0.f;
+	float CurrentMatch_SurvivalTime = 0.f;
+
+	// 영구 누적 데이터 (BeginPlay에서 세이브 파일을 읽어와서 세팅함)
+	int32 SessionTotalKills = 0;
+	int32 SessionTotalCrits = 0;
+
+	// 매 프레임 세이브를 열어보는 것을 방지하기 위한 체크 플래그
+	bool bAlreadyUnlocked_Scatter = false;
+	bool bAlreadyUnlocked_Explosive = false;
+	bool bAlreadyUnlocked_Acid = false;
+	bool bAlreadyUnlocked_Drone = false;
+	bool bAlreadyUnlocked_Chain = false;
+	bool bAlreadyUnlocked_BlackHole = false;
+
+	// 업적 달성을 검사하는 함수
+	void CheckAndSaveArmoryUnlocks();
 public:
 	// --- 성장 시스템 ---
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Growth")
@@ -401,4 +426,7 @@ public:
 	// ★ [추가] 무기고 스탯 일괄 적용 함수
 	UFUNCTION(BlueprintCallable, Category = "Combat|Special")
 	void InitializeArmoryWeapons(const TMap<EStartingWeaponType, int32>& ArmoryStats);
+	
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	void NotifyMonsterKill(AActor* KilledMonster);
 };
