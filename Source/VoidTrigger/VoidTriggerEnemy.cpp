@@ -4,6 +4,7 @@
 #include "VoidTriggerCharacter.h"
 #include "VoidTriggerDropItem.h"
 #include "Kismet/GameplayStatics.h"
+#include "VoidTriggerGameInstance.h"
 #include "GameFramework/PawnMovementComponent.h" // 추가: 무브먼트 제어를 위해 필요
 
 // Sets default values
@@ -21,6 +22,17 @@ void AVoidTriggerEnemy::BeginPlay()
 {
     Super::BeginPlay();
     
+	// GameInstance를 가져와서 우리가 만든 클래스로 형변환
+	if (UVoidTriggerGameInstance* GameInst = Cast<UVoidTriggerGameInstance>(GetGameInstance()))
+	{
+		// 1. 스폰되자마자 현재 설정값으로 초기화 (게임 중간에 스폰되는 적을 위함)
+		UpdateOverlayMaterial(GameInst->bCurrentOverlayState);
+
+		// 2. 델리게이트에 내 함수를 연결 (라디오 주파수 맞추기)
+		// AddDynamic은 블루프린트 호환(DYNAMIC) 델리게이트에 C++ 함수를 연결할 때 쓰는 매크로입니다.
+		GameInst->OnOverlaySettingChanged.AddDynamic(this, &AVoidTriggerEnemy::UpdateOverlayMaterial);
+	}
+	
     if (BaseMaxHP < 0.0f)
     {
         BaseMaxHP = MaxHealth;
@@ -242,4 +254,21 @@ void AVoidTriggerEnemy::ApplyWaveScaling(int32 WaveLevel, float HealthIncreaseRa
     float Multiplier = 1.0f + ((WaveLevel - 1) * HealthIncreaseRate);
     MaxHealth = BaseMaxHP * Multiplier;
     CurrentHealth = MaxHealth;
+}
+
+void AVoidTriggerEnemy::UpdateOverlayMaterial(bool bEnable)
+{
+	// 캐릭터의 메시 컴포넌트가 유효한지 확인
+	if (!GetMesh()) return;
+
+	if (bEnable && OutlineMaterialData)
+	{
+		// 설정이 켜져있고, 에디터에서 머티리얼을 할당해 두었다면 적용
+		GetMesh()->SetOverlayMaterial(OutlineMaterialData);
+	}
+	else
+	{
+		// 설정이 꺼졌다면 nullptr을 넣어 오버레이 해제
+		GetMesh()->SetOverlayMaterial(nullptr);
+	}
 }

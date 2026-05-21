@@ -3,6 +3,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "VoidTriggerCharacter.h" // 플레이어 클래스 헤더
 #include "VoidTriggerEnemy.h"    // 적 클래스 헤더 (폭탄용)
+#include "VoidTriggerGold.h"
 #include "VoidTriggerItem.h"
 // #include "VoidTriggerExpOrb.h" // 경험치 구슬 클래스 헤더 (자석용 - 본인 클래스명으로 변경하세요!)
 
@@ -55,6 +56,15 @@ void AVoidTriggerDropItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, A
         {
             AVoidTriggerItem* Orb = Cast<AVoidTriggerItem>(OrbActor);
             if (Orb) Orb->StartFlying(); // 경험치 구슬이 플레이어를 향해 날아가는 함수 호출
+        }
+        
+        TArray<AActor*> AllGolds;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AVoidTriggerGold::StaticClass(), AllGolds);
+        
+        for (AActor* GoldActor : AllGolds)
+        {
+            AVoidTriggerGold* Gold = Cast<AVoidTriggerGold>(GoldActor);
+            if (Gold) Gold->StartFlying(); // 동전 클래스에 구현된 날아오기 함수 호출
         }
     }
     // --------------------------------------------------

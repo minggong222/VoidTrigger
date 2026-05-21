@@ -122,6 +122,9 @@ void AVoidTriggerGameMode::SpawnEnemy()
     FVector SpawnDirection = FVector(FMath::Cos(FMath::DegreesToRadians(RandomAngle)), FMath::Sin(FMath::DegreesToRadians(RandomAngle)), 0.f);
     FVector SpawnLocation = PlayerLocation + (SpawnDirection * SpawnDistance);
 
+    // ★ [핵심 추가] 스폰 위치를 플레이어 허리에서 바닥으로 강제 하강시킵니다.
+    SpawnLocation.Z -= 90.f;
+
     // --- 3. 유동적 오브젝트 풀링 (TMap 활용) ---
     UClass* ClassPtr = SelectedClass.Get();
     AVoidTriggerEnemy* EnemyToSpawn = nullptr;

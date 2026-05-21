@@ -39,6 +39,14 @@ protected:
     // 재생 간격 (원하시는 대로 조절 가능)
     UPROPERTY(EditAnywhere, Category = "Audio")
     float SoundInterval = 5.0f;
+    
+    // GameInstance의 방송을 수신할 함수 (반드시 UFUNCTION 매크로가 있어야 합니다)
+    UFUNCTION()
+    void UpdateOverlayMaterial(bool bEnable);
+
+    // 에디터에서 할당해 줄 아웃라인 머티리얼 원본
+    UPROPERTY(EditAnywhere, Category = "Materials")
+    class UMaterialInterface* OutlineMaterialData;
 public: 
     // Called every frame
     virtual void Tick(float DeltaTime) override;

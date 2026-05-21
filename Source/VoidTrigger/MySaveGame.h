@@ -59,4 +59,7 @@ public:
 	// 총 획득 포인트에서 이미 무기들에 투자한 포인트를 빼고 남은 가용 포인트 계산
 	UFUNCTION(BlueprintPure, Category = "SaveData|Armory")
 	int32 GetAvailableArmoryPoints() const;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+    bool bEnableOverlay = true;
 };
