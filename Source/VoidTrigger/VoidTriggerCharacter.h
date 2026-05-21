@@ -208,6 +208,14 @@ protected:
 
 	// 업적 달성을 검사하는 함수
 	void CheckAndSaveArmoryUnlocks();
+	
+	// 에디터에서 WBP_Minimap을 할당할 빈칸
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<class UUserWidget> MinimapWidgetClass;
+
+	// 생성된 미니맵 위젯을 기억해둘 포인터 (나중에 숨기거나 지울 때 유용함)
+	UPROPERTY()
+	class UUserWidget* MinimapWidgetInstance;
 public:
 	// --- 성장 시스템 ---
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Growth")

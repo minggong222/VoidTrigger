@@ -38,4 +38,14 @@ public:
 	// 4. UI 설정창(블루프린트)에서 버튼을 눌렀을 때 호출할 함수
 	UFUNCTION(BlueprintCallable, Category = "Settings")
 	void SetAndSaveOverlaySetting(bool bEnable);
+	
+	// 레이더에 표시될 적들의 목록
+	UPROPERTY(BlueprintReadOnly, Category = "Radar")
+	TArray<class AActor*> ActiveRadarTargets;
+
+	// 적이 스폰될 때 호출
+	void RegisterRadarTarget(AActor* Target);
+    
+	// 적이 죽거나 파괴될 때 호출
+	void UnregisterRadarTarget(AActor* Target);
 };	

@@ -190,6 +190,21 @@ void AVoidTriggerCharacter::BeginPlay()
        }
     }
     
+	// 1. 에디터에서 미니맵 클래스(WBP_Minimap)를 정상적으로 할당했는지 확인
+	if (MinimapWidgetClass)
+	{
+		// 2. 위젯 생성 (블루프린트의 Create Widget 노드와 동일)
+		MinimapWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), MinimapWidgetClass);
+        
+		if (MinimapWidgetInstance)
+		{
+			// 3. 화면에 띄우기 (블루프린트의 Add to Viewport 노드와 동일)
+			MinimapWidgetInstance->AddToViewport();
+            
+			// 참고: ZOrder(화면 겹침 순서)를 정하고 싶다면 AddToViewport(0) 처럼 숫자를 넣으면 됩니다.
+		}
+	}
+	
     if (HUDClass)
     {
        UUserWidget* HUD = CreateWidget<UUserWidget>(GetWorld(), HUDClass);

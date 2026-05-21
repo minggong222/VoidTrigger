@@ -31,6 +31,8 @@ void AVoidTriggerEnemy::BeginPlay()
 		// 2. 델리게이트에 내 함수를 연결 (라디오 주파수 맞추기)
 		// AddDynamic은 블루프린트 호환(DYNAMIC) 델리게이트에 C++ 함수를 연결할 때 쓰는 매크로입니다.
 		GameInst->OnOverlaySettingChanged.AddDynamic(this, &AVoidTriggerEnemy::UpdateOverlayMaterial);
+		
+		GameInst->RegisterRadarTarget(this);
 	}
 	
     if (BaseMaxHP < 0.0f)
@@ -105,7 +107,7 @@ void AVoidTriggerEnemy::Deactivate()
 {
     if (!bIsActive) return;
     bIsActive = false;
-
+	
     // --- 드롭 로직 유지 ---
     FVector DropLocation = GetActorLocation();
     if (GetWorld())
@@ -179,6 +181,11 @@ void AVoidTriggerEnemy::Deactivate()
 	if (AudioComponent && AudioComponent->IsPlaying())
 	{
 		AudioComponent->Stop();
+	}
+	
+	if (UVoidTriggerGameInstance* GameInst = Cast<UVoidTriggerGameInstance>(GetGameInstance()))
+	{
+		GameInst->UnregisterRadarTarget(this);
 	}
 }
 

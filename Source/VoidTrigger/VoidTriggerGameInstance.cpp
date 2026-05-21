@@ -21,3 +21,19 @@ void UVoidTriggerGameInstance::SetAndSaveOverlaySetting(bool bEnable)
 		UGameplayStatics::SaveGameToSlot(SaveInst, TEXT("SettingsSlot"), 0);
 	}
 }
+
+void UVoidTriggerGameInstance::RegisterRadarTarget(AActor* Target)
+{
+    if (Target && !ActiveRadarTargets.Contains(Target))
+    {
+        ActiveRadarTargets.Add(Target);
+    }
+}
+
+void UVoidTriggerGameInstance::UnregisterRadarTarget(AActor* Target)
+{
+    if (Target)
+    {
+        ActiveRadarTargets.Remove(Target);
+    }
+}
