@@ -23,6 +23,9 @@
 AVoidTriggerCharacter::AVoidTriggerCharacter()
 {
     PrimaryActorTick.bCanEverTick = true;
+	
+	CritChance = 0.05f; 
+	CritMultiplier = 1.5f;
 
     FPSCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FPSCamera"));
     FPSCamera->SetupAttachment(GetCapsuleComponent());
@@ -413,12 +416,14 @@ void AVoidTriggerCharacter::Fire()
                         }
                     }
 
-                    float FinalDamage = Damage;
-                    if (FMath::FRand() <= CritChance)
-                    {
-                        FinalDamage *= CritMultiplier;
-                    	SessionTotalCrits++;
-                    }
+                	float FinalDamage = Damage;
+                	bool bIsCrit = (FMath::FRand() <= CritChance);
+
+                	if (bIsCrit)
+                	{
+                		FinalDamage *= CritMultiplier;
+                		SessionTotalCrits++;
+                	}
 
                     UGameplayStatics::ApplyDamage(HitActor, FinalDamage, GetController(), this, UDamageType::StaticClass());
                 	CurrentMatch_TotalDamageDealt += FinalDamage;
@@ -431,7 +436,8 @@ void AVoidTriggerCharacter::Fire()
                             UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitImpactEffect, HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation());
                         }
 
-                        // ★ 체인 라이트닝: 레벨에 따른 다중 도탄 적용
+                    	OnHitMarkerEvent.Broadcast(bIsCrit);
+                    	
                         if (bIsChainLightning && MaxChainCount > 0)
                         {
                             FVector Origin = HitResult.ImpactPoint; 
@@ -577,11 +583,9 @@ void AVoidTriggerCharacter::GainExp(float Amount)
 
 void AVoidTriggerCharacter::LevelUp()
 {
-    if (LevelUpHealRate > 0.0f)
-    {
-       float HealAmount = MaxHP * LevelUpHealRate;
-       CurrentHP = FMath::Min(MaxHP, CurrentHP + HealAmount);
-    }
+	float TotalHealRate = 0.1f + LevelUpHealRate; 
+	float HealAmount = MaxHP * TotalHealRate;
+	CurrentHP = FMath::Min(MaxHP, CurrentHP + HealAmount);
     
     CurrentExp -= MaxExp;
     Level++;
@@ -728,6 +732,9 @@ void AVoidTriggerCharacter::ApplyLevelUpUpgrade(ELevelUpUpgradeType UpgradeType)
        CurrentHP += 20.f;
        CurrentHP = FMath::Clamp(CurrentHP, 0.f, MaxHP);
        break;
+    case ELevelUpUpgradeType::CriticalChance:
+    	CritChance = FMath::Min(1.0f, CritChance + 0.05f);
+    	break;
     default:
        break;
     }
@@ -777,17 +784,22 @@ TArray<ELevelUpUpgradeType> AVoidTriggerCharacter::GetRandomUpgrades(int32 Count
     };
     for (ELevelUpUpgradeType Upgrade : NormalUpgrades)
     {
-       for (int i = 0; i < 10; i++) LotteryPool.Add(Upgrade);
+		LotteryPool.Add(Upgrade);
     }
 
-    while (SelectedUpgrades.Num() < Count && LotteryPool.Num() > 0)
-    {
-       int32 RandomIndex = FMath::RandRange(0, LotteryPool.Num() - 1);
-       ELevelUpUpgradeType Picked = LotteryPool[RandomIndex];
+	if (CritChance < 1.0f)
+	{
+		LotteryPool.Add(ELevelUpUpgradeType::CriticalChance);
+	}
+	
+	while (SelectedUpgrades.Num() < Count && LotteryPool.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, LotteryPool.Num() - 1);
+		ELevelUpUpgradeType Picked = LotteryPool[RandomIndex];
         
-       SelectedUpgrades.Add(Picked);
-       LotteryPool.Remove(Picked); 
-    }
+		SelectedUpgrades.Add(Picked);
+		LotteryPool.Remove(Picked); 
+	}
     return SelectedUpgrades;
 }
 

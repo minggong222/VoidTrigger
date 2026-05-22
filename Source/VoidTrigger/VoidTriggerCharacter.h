@@ -19,9 +19,10 @@ enum class ELevelUpUpgradeType : uint8
 	Damage			UMETA(DisplayName = "공격력 증가"),
 	MoveSpeed		UMETA(DisplayName = "이동속도 증가"),
 	MagnetRange		UMETA(DisplayName = "자력 범위 증가"),
-	MaxHP			UMETA(DisplayName = "최대 체력 증가")
+	MaxHP			UMETA(DisplayName = "최대 체력 증가"),
+	CriticalChance	UMETA(DisplayName = "치명타 확률 증가")
 };
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHitMarkerDelegate, bool, bIsCritical);
 // 2. ★ 로비 무기고 전용 Enum을 새로 만듭니다!
 UENUM(BlueprintType)
 enum class EStartingWeaponType : uint8
@@ -216,6 +217,7 @@ protected:
 	// 생성된 미니맵 위젯을 기억해둘 포인터 (나중에 숨기거나 지울 때 유용함)
 	UPROPERTY()
 	class UUserWidget* MinimapWidgetInstance;
+
 public:
 	// --- 성장 시스템 ---
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Growth")
@@ -437,4 +439,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	void NotifyMonsterKill(AActor* KilledMonster);
+	
+	UPROPERTY(BlueprintAssignable, Category = "Combat|Events")
+	FOnHitMarkerDelegate OnHitMarkerEvent;
 };

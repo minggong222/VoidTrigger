@@ -205,7 +205,10 @@ void AVoidTriggerEnemy::Activate(FVector NewLocation)
     {
         MovementComp->Activate();
     }
-
+	if (UVoidTriggerGameInstance* GameInst = Cast<UVoidTriggerGameInstance>(GetGameInstance()))
+	{
+		GameInst->RegisterRadarTarget(this);
+	}
     // --- 오디오 로직 수정 (재사용 시 타이머 재시작) ---
     GetWorldTimerManager().ClearTimer(AudioTimerHandle); // 혹시 모를 중복 방지
     
