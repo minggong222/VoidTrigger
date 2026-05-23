@@ -62,4 +62,10 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
     bool bEnableOverlay = true;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "SaveData|Records")
+	int32 BestSurvivalTime = 0; // 최고 생존 시간 (초 단위)
+
+	UPROPERTY(BlueprintReadWrite, Category = "SaveData|Records")
+	int32 BestRunKills = 0;     // 한 게임 최고 처치 수
 };

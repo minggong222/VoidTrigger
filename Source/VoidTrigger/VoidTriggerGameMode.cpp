@@ -1,4 +1,6 @@
 #include "VoidTriggerGameMode.h"
+
+#include "MySaveGame.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "VoidTriggerEnemy.h"
@@ -31,15 +33,29 @@ void AVoidTriggerGameMode::UpdateGameTimer()
         return; 
     }
     
-    // ★ [추가] 발악 페이즈라면 매초마다 스폰 주기를 미친듯이 줄입니다!
     if (bIsEndlessMode)
     {
-        // 최저 0.1초 쿨타임까지 도달하도록 0.02초씩 계속 줄임
+        // 1. 스폰 속도 감소 (최저 0.1초까지)
         CurrentSpawnInterval = FMath::Max(0.1f, CurrentSpawnInterval - 0.02f);
         
         GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
         GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AVoidTriggerGameMode::SpawnEnemy, CurrentSpawnInterval, true);
-        return; // 아래의 일반 웨이브 로직은 타지 않음
+        
+        // ==========================================
+        // ★ [핵심 추가] 시간에 따른 무한 체력 스케일링
+        // ==========================================
+        EndlessTimeCounter++;
+        
+        // 5초마다 한 번씩 체력을 올리고 싶다면 (시간은 기획에 맞게 조절하세요!)
+        if (EndlessTimeCounter >= 15) 
+        {
+            CurrentWave++; // 체력 계산식에 쓰이는 웨이브 수치를 강제로 계속 올려버림!
+            EndlessTimeCounter = 0; // 카운터 초기화
+            
+            UE_LOG(LogTemp, Warning, TEXT("발악 페이즈: 적 체력 스케일링 상승! (현재 적용 웨이브: %d)"), CurrentWave);
+        }
+        
+        return; // 발악 페이즈일 때는 아래의 일반 웨이브 로직을 타지 않고 바로 종료
     }
     
     int32 NewWave = (ElapsedGameTime / 120) + 1; // 30초마다 웨이브 증가
@@ -184,7 +200,48 @@ void AVoidTriggerGameMode::OnBossDefeated()
     GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AVoidTriggerGameMode::SpawnEnemy, CurrentSpawnInterval, true);
 }
 
+void AVoidTriggerGameMode::AddKillCount()
+{
+    CurrentRunKills++;
+}
+
 void AVoidTriggerGameMode::GameOver() 
 {
-    // 게임 오버 로직
+    UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("SaveSlot"), 0));
+    
+    if (!SaveGameInstance) 
+    {
+        // 세이브가 없으면 새로 생성
+        SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+    }
+
+    // 2. 최고 기록 갱신 여부 체크
+    bool bIsNewRecord = false;
+
+    // 최고 생존 시간 갱신 (ElapsedGameTime은 초 단위로 계속 오르고 있던 변수)
+    if (ElapsedGameTime > SaveGameInstance->BestSurvivalTime)
+    {
+        SaveGameInstance->BestSurvivalTime = ElapsedGameTime;
+        bIsNewRecord = true;
+    }
+
+    // 최고 처치 수 갱신
+    if (CurrentRunKills > SaveGameInstance->BestRunKills)
+    {
+        SaveGameInstance->BestRunKills = CurrentRunKills;
+        bIsNewRecord = true;
+    }
+
+    // 3. 누적 킬 수도 올려줍니다 (무기 해금용)
+    SaveGameInstance->TotalMonsterKills += CurrentRunKills;
+
+    // 4. 세이브 데이터 저장
+    UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("SaveSlot"), 0);
+
+    // 로그 출력 (디버그용)
+    UE_LOG(LogTemp, Warning, TEXT("게임 오버! 생존: %d초, 킬: %d"), ElapsedGameTime, CurrentRunKills);
+    if (bIsNewRecord)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("🎉 신기록 달성! 🎉"));
+    }
 }

@@ -43,6 +43,9 @@ UMySaveGame::UMySaveGame()
 	TotalMonsterKills = 0;
 	TotalCriticalHits = 0;
 	bEnableOverlay = true;
+	
+	BestSurvivalTime = 0;
+	BestRunKills = 0;
 }
 
 int32 UMySaveGame::GetTotalEarnedArmoryPoints() const

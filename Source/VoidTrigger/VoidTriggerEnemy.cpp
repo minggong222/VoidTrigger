@@ -5,6 +5,7 @@
 #include "VoidTriggerDropItem.h"
 #include "Kismet/GameplayStatics.h"
 #include "VoidTriggerGameInstance.h"
+#include "VoidTriggerGameMode.h"
 #include "GameFramework/PawnMovementComponent.h" // 추가: 무브먼트 제어를 위해 필요
 
 // Sets default values
@@ -130,7 +131,11 @@ void AVoidTriggerEnemy::Deactivate()
 	{
 		Player->NotifyMonsterKill(this);
 	}
-	
+	AVoidTriggerGameMode* GM = Cast<AVoidTriggerGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GM)
+	{
+		GM->AddKillCount();
+	}
     float GoldDropBonus = Player ? Player->ResourceDropBonus : 0.0f;
     float SpecialBonus = Player ? Player->SpecialDropBonus : 0.0f;
 

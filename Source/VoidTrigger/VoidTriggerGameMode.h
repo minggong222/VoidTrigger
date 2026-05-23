@@ -98,6 +98,15 @@ public:
     void UpdateGameTimer();
     void GameOver();
 
+    int32 EndlessTimeCounter = 0;    
+    
+    // 이번 게임에서 처치한 몹의 수
+    UPROPERTY(BlueprintReadOnly, Category = "GameMode|Records")
+    int32 CurrentRunKills = 0;
+
+    // 적이 죽을 때마다 호출할 함수
+    UFUNCTION(BlueprintCallable, Category = "GameMode|Records")
+    void AddKillCount();
 private:
     // 내부적으로 현재 굴러가고 있는 스폰 리스트와 간격 (에디터 노출 X)
     TArray<FEnemySpawnData> CurrentEnemySpawnList;

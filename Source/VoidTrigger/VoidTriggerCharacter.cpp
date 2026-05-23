@@ -18,6 +18,7 @@
 #include "VoidDrone.h"
 #include "VoidTriggerGold.h"
 #include "VoidTriggerGameInstance.h"
+#include "VoidTriggerGameMode.h"
 #include "Engine/OverlapResult.h"
 
 AVoidTriggerCharacter::AVoidTriggerCharacter()
@@ -685,6 +686,12 @@ void AVoidTriggerCharacter::Die()
     APlayerController* PC = Cast<APlayerController>(GetController());
     if (!PC) return;
 
+	AVoidTriggerGameMode* GM = Cast<AVoidTriggerGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GM)
+	{
+		GM->GameOver(); // 여기서 최고 기록 갱신 및 디스크 저장이 일어남
+	}
+	
     DisableInput(PC);
     UGameplayStatics::SetGamePaused(GetWorld(), true);
     
