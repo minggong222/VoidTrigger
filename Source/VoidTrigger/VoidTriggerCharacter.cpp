@@ -590,7 +590,7 @@ void AVoidTriggerCharacter::LevelUp()
     
     CurrentExp -= MaxExp;
     Level++;
-    MaxExp *= 1.2f;
+    MaxExp *= 1.1f;
     PendingLevelUps++;
 
     if (PendingLevelUps == 1)
