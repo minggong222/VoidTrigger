@@ -1002,8 +1002,8 @@ void AVoidTriggerCharacter::CheckAndSaveArmoryUnlocks()
 {
     bool bNeedToSave = false;
 
-    // 1. 산탄 사격 (5m 이내 250마리)
-    if (!bAlreadyUnlocked_Scatter && CurrentMatch_CloseKills >= 250)
+    // 1. 산탄 사격 (5m 이내 100마리)
+    if (!bAlreadyUnlocked_Scatter && CurrentMatch_CloseKills >= 100)
     {
         bAlreadyUnlocked_Scatter = true;
         bNeedToSave = true;
