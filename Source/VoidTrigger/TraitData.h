@@ -17,7 +17,7 @@ public:
 	FName TraitID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trait")
-	FString TraitName;
+	FText TraitName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trait")
 	int32 MaxLevel;

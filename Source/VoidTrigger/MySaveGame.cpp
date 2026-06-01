@@ -6,7 +6,7 @@
 UMySaveGame::UMySaveGame()
 {
 	// 1. 기본 재화 및 옵션 세팅 초기화
-	TotalGold = 0;
+	TotalGold = 1000000;
 	SavedSens = 1.0f;
 	SavedBGM = 1.0f;
 	SavedSFX = 1.0f;

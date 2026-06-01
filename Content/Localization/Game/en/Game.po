@@ -1,0 +1,764 @@
+﻿# Game English translation.
+# Fill out your copyright notice in the Description page of Project Settings.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Game\n"
+"POT-Creation-Date: 2026-05-29 06:54\n"
+"PO-Revision-Date: 2026-05-29 06:54\n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Key:	1D254E06469A5C46C21127856E6753B8
+#. SourceLocation:	/Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_0.NewTextRenderComponent.Text
+#: /Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_0.NewTextRenderComponent.Text
+msgctxt ",1D254E06469A5C46C21127856E6753B8"
+msgid "Please Enable \"generate mesh distance fields\" in project setting"
+msgstr "Please Enable \"generate mesh distance fields\" in project setting"
+
+#. Key:	B77625A540E65E6519733987079F95C4
+#. SourceLocation:	/Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_1.NewTextRenderComponent.Text
+#: /Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_1.NewTextRenderComponent.Text
+msgctxt ",B77625A540E65E6519733987079F95C4"
+msgid "BP_SplineVFX_Holy"
+msgstr "BP_SplineVFX_Holy"
+
+#. Key:	DB3407A64A38FE4D0BF6C3B967816AA6
+#. SourceLocation:	/Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_10.NewTextRenderComponent.Text
+#: /Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_10.NewTextRenderComponent.Text
+msgctxt ",DB3407A64A38FE4D0BF6C3B967816AA6"
+msgid "BP_SplineVFX_Wind"
+msgstr "BP_SplineVFX_Wind"
+
+#. Key:	8B0483F2438529939B17569B2A488582
+#. SourceLocation:	/Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_2.NewTextRenderComponent.Text
+#: /Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_2.NewTextRenderComponent.Text
+msgctxt ",8B0483F2438529939B17569B2A488582"
+msgid "BP_SplineVFX_Frost"
+msgstr "BP_SplineVFX_Frost"
+
+#. Key:	F042BF824661171BCB06D5902E2C4F7E
+#. SourceLocation:	/Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_3.NewTextRenderComponent.Text
+#: /Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_3.NewTextRenderComponent.Text
+msgctxt ",F042BF824661171BCB06D5902E2C4F7E"
+msgid "BP_SplineVFX_EnergyLoop"
+msgstr "BP_SplineVFX_EnergyLoop"
+
+#. Key:	3AC663644C25AA2F185E2D842BC441A6
+#. SourceLocation:	/Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_4.NewTextRenderComponent.Text
+#: /Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_4.NewTextRenderComponent.Text
+msgctxt ",3AC663644C25AA2F185E2D842BC441A6"
+msgid "BP_SplineVFX_Fire"
+msgstr "BP_SplineVFX_Fire"
+
+#. Key:	1A0E3AEE4A76115B3AD44CAFFE07EC74
+#. SourceLocation:	/Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_5.NewTextRenderComponent.Text
+#: /Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_5.NewTextRenderComponent.Text
+msgctxt ",1A0E3AEE4A76115B3AD44CAFFE07EC74"
+msgid "BP_SplineVFX_ElectricLightning"
+msgstr "BP_SplineVFX_ElectricLightning"
+
+#. Key:	3EC608B4479757F79A351B89A907A606
+#. SourceLocation:	/Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_6.NewTextRenderComponent.Text
+#: /Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_6.NewTextRenderComponent.Text
+msgctxt ",3EC608B4479757F79A351B89A907A606"
+msgid "BP_SplineVFX_MiasmaBoil"
+msgstr "BP_SplineVFX_MiasmaBoil"
+
+#. Key:	1FC0298E4E3068663E4F6E94E222C12F
+#. SourceLocation:	/Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_7.NewTextRenderComponent.Text
+#: /Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_7.NewTextRenderComponent.Text
+msgctxt ",1FC0298E4E3068663E4F6E94E222C12F"
+msgid "BP_SplineVFX_WaterSplash"
+msgstr "BP_SplineVFX_WaterSplash"
+
+#. Key:	D690A9D34283E86B654D68B4FB04A8CE
+#. SourceLocation:	/Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_8.NewTextRenderComponent.Text
+#: /Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_8.NewTextRenderComponent.Text
+msgctxt ",D690A9D34283E86B654D68B4FB04A8CE"
+msgid "BP_SplineVFX_Magic"
+msgstr "BP_SplineVFX_Magic"
+
+#. Key:	40EF103E43E0E1EC7D28EAA28660C655
+#. SourceLocation:	/Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_9.NewTextRenderComponent.Text
+#: /Game/_SplineVFX/Demo/OverView_DemoScene_Spline.OverView_DemoScene_Spline:PersistentLevel.TextRenderActor_9.NewTextRenderComponent.Text
+msgctxt ",40EF103E43E0E1EC7D28EAA28660C655"
+msgid "BP_SplineVFX_ParticleFollow"
+msgstr "BP_SplineVFX_ParticleFollow"
+
+#. Key:	D620319E40FAF04046146894C48082E1
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.ATK_Crit.Description
+#: /Game/DT_Trait.DT_Trait.ATK_Crit.Description
+msgctxt ",D620319E40FAF04046146894C48082E1"
+msgid "(조건: 화력 강화 2Lv)<br>치명타 확률 및 피해량 배율 증가"
+msgstr "(Requires: Firepower Lv.2)<br>Increases Critical Hit Rate and Critical Damage Multiplier"
+
+#. Key:	1BD4123E40BE28642D370B995109889E
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.ATK_Damage.Description
+#: /Game/DT_Trait.DT_Trait.ATK_Damage.Description
+msgctxt ",1BD4123E40BE28642D370B995109889E"
+msgid "기본 무기 피해량 증가<br>(레벨당 5%)"
+msgstr "Increases base weapon damage<br>(+5% per level)"
+
+#. Key:	EE37293F4AA5E9B25DC48B9AF48F4300
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.ATK_Mag.Description
+#: /Game/DT_Trait.DT_Trait.ATK_Mag.Description
+msgctxt ",EE37293F4AA5E9B25DC48B9AF48F4300"
+msgid "(조건: 전술 장전 3Lv)<br>기본 무기의 탄창 용량 증가"
+msgstr "(Requires: Tactical Reload Lv.3)<br>Increases base weapon magazine capacity"
+
+#. Key:	59246FC14BCE1B120F7006805CE13A5E
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.ATK_Reload.Description
+#: /Game/DT_Trait.DT_Trait.ATK_Reload.Description
+msgctxt ",59246FC14BCE1B120F7006805CE13A5E"
+msgid "(조건: 화력 강화 1Lv)<br>재장전 속도 감소"
+msgstr "(Requires: Firepower Lv.1)<br>Decreases reload time"
+
+#. Key:	48D27E4444380FE01FA2C4AAE39A7203
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.ATK_Suppress.Description
+#: /Game/DT_Trait.DT_Trait.ATK_Suppress.Description
+msgctxt ",48D27E4444380FE01FA2C4AAE39A7203"
+msgid "(조건: 급소 조준 3Lv)<br>피격당한 적의 이동 속도를 잠깐 늦추거나<br>미세한 경직을 발생시킴"
+msgstr "(Requires: Precision Aim Lv.3)<br>Briefly slows down or inflicts minor hitstun<br>on enemies hit"
+
+#. Key:	A01FC5444E9C072562215CB2416B3467
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.SUR_Armor.Description
+#: /Game/DT_Trait.DT_Trait.SUR_Armor.Description
+msgctxt ",A01FC5444E9C072562215CB2416B3467"
+msgid "(조건: 체력 단련 2Lv)<br>피격 시 받는 피해량 퍼센트 단위로 감소"
+msgstr "(Requires: Fitness Lv.2)<br>Reduces incoming damage by a percentage"
+
+#. Key:	4991BF344E9C8FCE4F7D849FDCBB4C48
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.SUR_Heal.Description
+#: /Game/DT_Trait.DT_Trait.SUR_Heal.Description
+msgctxt ",4991BF344E9C8FCE4F7D849FDCBB4C48"
+msgid "(조건: 방호복 강화 3Lv)<br>레벨업 시 잃은 체력의 일부 자동 회복"
+msgstr "(Requires: Exo-Suit Upgrade Lv.3)<br>Automatically restores a portion of missing HP upon leveling up"
+
+#. Key:	35F1F6944843C13D386EC1B7A0CC0B86
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.SUR_Health.Description
+#: /Game/DT_Trait.DT_Trait.SUR_Health.Description
+msgctxt ",35F1F6944843C13D386EC1B7A0CC0B86"
+msgid "최대 체력 증가<br>(레벨당 10%)"
+msgstr "Increases maximum HP<br>(+10% per level)"
+
+#. Key:	A4CCC1054749805A6D9F2EB0F1B3B1E5
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.SUR_Revive.Description
+#: /Game/DT_Trait.DT_Trait.SUR_Revive.Description
+msgctxt ",A4CCC1054749805A6D9F2EB0F1B3B1E5"
+msgid "(조건: 전술 기동 3Lv)<br>치명적인 피해를 입었을 때<br>체력 1로 생존 후 짧은 무적 제공<br>(레벨이 오를수록 발동 쿨타임 감소)"
+msgstr "(Requires: Tactical Maneuvers Lv.3)<br>Survive fatal damage with 1 HP and gain brief invincibility<br>(Cooldown decreases per level)"
+
+#. Key:	4F10CC1F4A81881BEB50B4862E042F43
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.SUR_Speed.Description
+#: /Game/DT_Trait.DT_Trait.SUR_Speed.Description
+msgctxt ",4F10CC1F4A81881BEB50B4862E042F43"
+msgid "(조건: 체력 단련 1Lv)<br>기본 이동 속도 증가 및 대시 쿨타임 감소"
+msgstr "(Requires: Fitness Lv.1)<br>Increases base movement speed and reduces dash cooldown"
+
+#. Key:	F377A23F4AC65E70E8485BA430AEF262
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.UTL_Discount.Description
+#: /Game/DT_Trait.DT_Trait.UTL_Discount.Description
+msgctxt ",F377A23F4AC65E70E8485BA430AEF262"
+msgid "(조건: 보급품 탐색 3Lv)<br>특성 업그레이드에서 구매하는 아이템<br>가격 영구 할인"
+msgstr "(Requires: Scavenge Supplies Lv.3)<br>Permanently discounts the price of items<br>in Trait Upgrades"
+
+#. Key:	552C96E440D2E8776EFE069446A84AB1
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.UTL_Drop.Description
+#: /Game/DT_Trait.DT_Trait.UTL_Drop.Description
+msgctxt ",552C96E440D2E8776EFE069446A84AB1"
+msgid "적 처치 시 획득하는 영구 업그레이드 재화 드랍률 증가"
+msgstr "Increases drop rate of permanent upgrade currency from defeated enemies"
+
+#. Key:	B29599B04220E0A418EDEDB26B457027
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.UTL_Rarity.Description
+#: /Game/DT_Trait.DT_Trait.UTL_Rarity.Description
+msgctxt ",B29599B04220E0A418EDEDB26B457027"
+msgid "(조건: 자원 채굴 1Lv)<br>인게임에서 특수 무기가 등장할 확률 증가"
+msgstr "(Requires: Resource Mining Lv.1)<br>Increases the spawn rate of special weapons in-game"
+
+#. Key:	399AFB94400490E4CA39399BF19A9794
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.UTL_Reroll.Description
+#: /Game/DT_Trait.DT_Trait.UTL_Reroll.Description
+msgctxt ",399AFB94400490E4CA39399BF19A9794"
+msgid "(조건: 시작 보급 3Lv)<br>인게임 레벨업 시 등장하는<br>능력치 선택지 개수 증가 및 새로고침 기능 해금"
+msgstr "(Requires: Starting Supplies Lv.3)<br>Increases the number of stat options upon level-up<br>and unlocks the Reroll feature"
+
+#. Key:	D89159784DE7EEB4C23960B3B9474924
+#. SourceLocation:	/Game/DT_Trait.DT_Trait.UTL_StartCash.Description
+#: /Game/DT_Trait.DT_Trait.UTL_StartCash.Description
+msgctxt ",D89159784DE7EEB4C23960B3B9474924"
+msgid "(조건: 자원 채굴 2Lv)<br>매 회차 시작 시 기본 레벨 증가"
+msgstr "(Requires: Resource Mining Lv.2)<br>Increases starting base level for each run"
+
+#. Key:	1AA261C245D2BEFE4F1D82A93117ED73
+#. SourceLocation:	/Game/Fire_EXP_Vol01_Free/Map/Map_Overview.Map_Overview:PersistentLevel.TextRenderActor_1.NewTextRenderComponent.Text
+#: /Game/Fire_EXP_Vol01_Free/Map/Map_Overview.Map_Overview:PersistentLevel.TextRenderActor_1.NewTextRenderComponent.Text
+msgctxt ",1AA261C245D2BEFE4F1D82A93117ED73"
+msgid "EXP"
+msgstr "EXP"
+
+#. Key:	31CC0B0948771359CB16009245FD18E5
+#. SourceLocation:	/Game/Fire_EXP_Vol01_Free/Map/Map_Overview.Map_Overview:PersistentLevel.TextRenderActor_10.NewTextRenderComponent.Text
+#: /Game/Fire_EXP_Vol01_Free/Map/Map_Overview.Map_Overview:PersistentLevel.TextRenderActor_10.NewTextRenderComponent.Text
+msgctxt ",31CC0B0948771359CB16009245FD18E5"
+msgid "Fire Rate"
+msgstr "Fire Rate"
+
+#. Key:	7596B8A5462183555DBF16A58766BCBC
+#. SourceLocation:	/Game/Fire_EXP_Vol01_Free/Map/Map_Overview.Map_Overview:PersistentLevel.TextRenderActor_5.NewTextRenderComponent.Text
+#: /Game/Fire_EXP_Vol01_Free/Map/Map_Overview.Map_Overview:PersistentLevel.TextRenderActor_5.NewTextRenderComponent.Text
+msgctxt ",7596B8A5462183555DBF16A58766BCBC"
+msgid "Fire Loop"
+msgstr "Fire Loop"
+
+#. Key:	CDB7F26D41A56D0EFC02AD841D8D168C
+#. SourceLocation:	/Game/Fire_EXP_Vol01_Free/Material/M_Additive_Master.M_Additive_Master:MaterialExpressionVectorParameter_0.ChannelNames.A
+#: /Game/Fire_EXP_Vol01_Free/Material/M_Additive_Master.M_Additive_Master:MaterialExpressionVectorParameter_0.ChannelNames.A
+msgctxt ",CDB7F26D41A56D0EFC02AD841D8D168C"
+msgid "Main_VOffset"
+msgstr "Main_VOffset"
+
+#. Key:	A61F3A684E9B30B129708CA3D722033D
+#. SourceLocation:	/Game/Fire_EXP_Vol01_Free/Material/M_Additive_Master.M_Additive_Master:MaterialExpressionVectorParameter_0.ChannelNames.B
+#: /Game/Fire_EXP_Vol01_Free/Material/M_Additive_Master.M_Additive_Master:MaterialExpressionVectorParameter_0.ChannelNames.B
+msgctxt ",A61F3A684E9B30B129708CA3D722033D"
+msgid "Main_UOffset"
+msgstr "Main_UOffset"
+
+#. Key:	61DEE7454C3173FCF7D20CB087953DB1
+#. SourceLocation:	/Game/Fire_EXP_Vol01_Free/Material/M_Additive_Master.M_Additive_Master:MaterialExpressionVectorParameter_0.ChannelNames.G
+#: /Game/Fire_EXP_Vol01_Free/Material/M_Additive_Master.M_Additive_Master:MaterialExpressionVectorParameter_0.ChannelNames.G
+msgctxt ",61DEE7454C3173FCF7D20CB087953DB1"
+msgid "Main_VTile"
+msgstr "Main_VTile"
+
+#. Key:	13041E344213E8EB27F9D1852961B4CD
+#. SourceLocation:	/Game/Fire_EXP_Vol01_Free/Material/M_Additive_Master.M_Additive_Master:MaterialExpressionVectorParameter_0.ChannelNames.R
+#: /Game/Fire_EXP_Vol01_Free/Material/M_Additive_Master.M_Additive_Master:MaterialExpressionVectorParameter_0.ChannelNames.R
+msgctxt ",13041E344213E8EB27F9D1852961B4CD"
+msgid "Main_UTile"
+msgstr "Main_UTile"
+
+#. Key:	3E9D640E476DF017E262C58D93697655
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:ExecuteUbergraph_WBP_Armory [Script Bytecode]
+#: /Game/WBP_Armory.WBP_Armory_C:ExecuteUbergraph_WBP_Armory [Script Bytecode]
+msgctxt ",3E9D640E476DF017E262C58D93697655"
+msgid "남은 포인트 : {Point}"
+msgstr "Points Left : {Point}"
+
+#. Key:	1A106551433F37E893575E9E48C37F96
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock.Text
+msgctxt ",1A106551433F37E893575E9E48C37F96"
+msgid "산탄"
+msgstr "Spread Shot"
+
+#. Key:	1266BE754CB6B16BE157DC95BF5850D4
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_10.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_10.Text
+msgctxt ",1266BE754CB6B16BE157DC95BF5850D4"
+msgid "자동 드론"
+msgstr "Auto Drone"
+
+#. Key:	28226593441AA4F89D4450BEE720A463
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_1125.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_1125.Text
+msgctxt ",28226593441AA4F89D4450BEE720A463"
+msgid "단일 판 달리기(Sprint) 시간 총 6분 달성"
+msgstr "Sprint for a total of 6 minutes in a single run"
+
+#. Key:	57D1DB794586922DF1BD45B752599514
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_1283.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_1283.Text
+msgctxt ",57D1DB794586922DF1BD45B752599514"
+msgid "누적 몬스터 처치 5,000마리 달성"
+msgstr "Defeat a total of 5,000 monsters"
+
+#. Key:	E9AB536443FB537CA6C5E4843B1A509F
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_159.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_159.Text
+msgctxt ",E9AB536443FB537CA6C5E4843B1A509F"
+msgid "같은 단계의 특성을 모두 5레벨로 달성할 때마다 1포인트를 획득합니다."
+msgstr "Earn 1 point each time all traits in the same tier reach Level 5."
+
+#. Key:	12F675134A47683DA356309F3F8F8B65
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_18.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_18.Text
+msgctxt ",12F675134A47683DA356309F3F8F8B65"
+msgid "+"
+msgstr "+"
+
+#. Key:	1A0D03E64FEC61069EC688A9E353B820
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_2.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_2.Text
+msgctxt ",1A0D03E64FEC61069EC688A9E353B820"
+msgid "폭발탄"
+msgstr "Explosive Rounds"
+
+#. Key:	0328EBB54B98E8C00F80879689645DB8
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_238.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_238.Text
+msgctxt ",0328EBB54B98E8C00F80879689645DB8"
+msgid "단일 판 누적 데미지 50,000 달성"
+msgstr "Deal 50,000 total damage in a single run"
+
+#. Key:	B6DCB89347193CC169425CA55EA30A21
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_310.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_310.Text
+msgctxt ",B6DCB89347193CC169425CA55EA30A21"
+msgid "-"
+msgstr "-"
+
+#. Key:	F657FC5545B837F8E51D709C097B00CD
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_4.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_4.Text
+msgctxt ",F657FC5545B837F8E51D709C097B00CD"
+msgid "도탄"
+msgstr "Ricochet"
+
+#. Key:	03E3F03941DBFDE5F194F08238DCB93E
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_54.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_54.Text
+msgctxt ",03E3F03941DBFDE5F194F08238DCB93E"
+msgid "관통탄"
+msgstr "Piercing Rounds"
+
+#. Key:	A5158FD94D374D4DE21305AACB56AB00
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_555.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_555.Text
+msgctxt ",A5158FD94D374D4DE21305AACB56AB00"
+msgid "단일 판 5m 이내 근접 처치 100마리 달성"
+msgstr "Defeat 100 enemies within 5m in a single run"
+
+#. Key:	B348E3A24EC51158FD106E9695D63BAB
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_6.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_6.Text
+msgctxt ",B348E3A24EC51158FD106E9695D63BAB"
+msgid "블랙홀"
+msgstr "Black Hole"
+
+#. Key:	2ED45C564F9AC1547459A78EA15E99D0
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_743.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_743.Text
+msgctxt ",2ED45C564F9AC1547459A78EA15E99D0"
+msgid "누적 치명타(Critical) 적중 1,500회 달성"
+msgstr "Land a total of 1,500 Critical Hits"
+
+#. Key:	935F80BE4F76A50CB9294C9761CB88B7
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_8.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_8.Text
+msgctxt ",935F80BE4F76A50CB9294C9761CB88B7"
+msgid "화염 장판"
+msgstr "Fire Zone"
+
+#. Key:	CC9206B640C72B2CB3627E8C06DD2D14
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_908.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.TextBlock_908.Text
+msgctxt ",CC9206B640C72B2CB3627E8C06DD2D14"
+msgid "단일 스테이지에서 죽지 않고 10분 생존"
+msgstr "Survive for 10 minutes in a single stage without dying"
+
+#. Key:	620088C7496191EDD891B0AA6C769E47
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level1.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level1.Text
+msgctxt ",620088C7496191EDD891B0AA6C769E47"
+msgid "0"
+msgstr "0"
+
+#. Key:	8104D29E46497CB95ECA3A971DA43C71
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level2.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level2.Text
+msgctxt ",8104D29E46497CB95ECA3A971DA43C71"
+msgid "0"
+msgstr "0"
+
+#. Key:	9951B4BD4784A410E17FA9B90526EF41
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level3.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level3.Text
+msgctxt ",9951B4BD4784A410E17FA9B90526EF41"
+msgid "0"
+msgstr "0"
+
+#. Key:	0779BA1F4A7C18EC722091A0F6626F07
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level4.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level4.Text
+msgctxt ",0779BA1F4A7C18EC722091A0F6626F07"
+msgid "0"
+msgstr "0"
+
+#. Key:	09E0C133497638B0F166E8AC0437E2EC
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level5.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level5.Text
+msgctxt ",09E0C133497638B0F166E8AC0437E2EC"
+msgid "0"
+msgstr "0"
+
+#. Key:	E5D84828422B777D8E1A73B4B3CFC11A
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level6.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level6.Text
+msgctxt ",E5D84828422B777D8E1A73B4B3CFC11A"
+msgid "0"
+msgstr "0"
+
+#. Key:	E0B795C04C4660BE396A42A848575787
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level7.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.Txt_Level7.Text
+msgctxt ",E0B795C04C4660BE396A42A848575787"
+msgid "0"
+msgstr "0"
+
+#. Key:	6230A5194C08022E00E2B587E32C4B87
+#. SourceLocation:	/Game/WBP_Armory.WBP_Armory_C:WidgetTree.txt_point.Text
+#: /Game/WBP_Armory.WBP_Armory_C:WidgetTree.txt_point.Text
+msgctxt ",6230A5194C08022E00E2B587E32C4B87"
+msgid "남은 포인트 : 0"
+msgstr "Points Left : 0"
+
+#. Key:	03772BBF4845F316412F988B82883C00
+#. SourceLocation:	/Game/WBP_GameOver.WBP_GameOver_C:ExecuteUbergraph_WBP_GameOver [Script Bytecode]
+#: /Game/WBP_GameOver.WBP_GameOver_C:ExecuteUbergraph_WBP_GameOver [Script Bytecode]
+msgctxt ",03772BBF4845F316412F988B82883C00"
+msgid "이번 기록 : {Min}:{Sec} ({Kill} 킬)"
+msgstr "Current Run : {Min}:{Sec} ({Kill} Kills)"
+
+#. Key:	D293E8764EB428AF4F2F20993D3A5C94
+#. SourceLocation:	/Game/WBP_GameOver.WBP_GameOver_C:ExecuteUbergraph_WBP_GameOver [Script Bytecode]
+#: /Game/WBP_GameOver.WBP_GameOver_C:ExecuteUbergraph_WBP_GameOver [Script Bytecode]
+msgctxt ",D293E8764EB428AF4F2F20993D3A5C94"
+msgid "최고 기록 : {Min}:{Sec} ({Kill} 킬)"
+msgstr "Best Record : {Min}:{Sec} ({Kill} Kills)"
+
+#. Key:	5F551B134660D721C34051857C813CAA
+#. SourceLocation:	/Game/WBP_GameOver.WBP_GameOver_C:WidgetTree.TextBlock_123.Text
+#: /Game/WBP_GameOver.WBP_GameOver_C:WidgetTree.TextBlock_123.Text
+msgctxt ",5F551B134660D721C34051857C813CAA"
+msgid "YOU DIED"
+msgstr "YOU DIED"
+
+#. Key:	592E24E24178CB09007D0EA585488C3C
+#. SourceLocation:	/Game/WBP_GameOver.WBP_GameOver_C:WidgetTree.TextBlock_172.Text
+#: /Game/WBP_GameOver.WBP_GameOver_C:WidgetTree.TextBlock_172.Text
+msgctxt ",592E24E24178CB09007D0EA585488C3C"
+msgid "다시 시작"
+msgstr "Restart"
+
+#. Key:	DD8E27484C5851FEEDFEBCBAB043991F
+#. SourceLocation:	/Game/WBP_GameOver.WBP_GameOver_C:WidgetTree.TextBlock_223.Text
+#: /Game/WBP_GameOver.WBP_GameOver_C:WidgetTree.TextBlock_223.Text
+msgctxt ",DD8E27484C5851FEEDFEBCBAB043991F"
+msgid "로비로 돌아가기"
+msgstr "Return to Lobby"
+
+#. Key:	8D260D2E4A7D226099019E999E4305DF
+#. SourceLocation:	/Game/WBP_HUD.WBP_HUD_C:GetTimeText [Script Bytecode]
+#: /Game/WBP_HUD.WBP_HUD_C:GetTimeText [Script Bytecode]
+msgctxt ",8D260D2E4A7D226099019E999E4305DF"
+msgid "{Min}:{Sec}"
+msgstr "{Min}:{Sec}"
+
+#. Key:	0AD34F204B8465A243B169BC9EE71B06
+#. SourceLocation:	/Game/WBP_HUD.WBP_HUD_C:WidgetTree.TextBlock_307.Text
+#: /Game/WBP_HUD.WBP_HUD_C:WidgetTree.TextBlock_307.Text
+msgctxt ",0AD34F204B8465A243B169BC9EE71B06"
+msgid "/"
+msgstr "/"
+
+#. Key:	12EEDB494AC51E5E6DEE36B565D43CDF
+#. SourceLocation:	/Game/WBP_LevelUp.WBP_LevelUp_C:ExecuteUbergraph_WBP_LevelUp [Script Bytecode]
+#: /Game/WBP_LevelUp.WBP_LevelUp_C:ExecuteUbergraph_WBP_LevelUp [Script Bytecode]
+msgctxt ",12EEDB494AC51E5E6DEE36B565D43CDF"
+msgid "남은 횟수: {Point}"
+msgstr "Rerolls Left: {Point}"
+
+#. Key:	E5AD9E214D6AF85D411E9C990BFE689D
+#. SourceLocation:	/Game/WBP_LevelUp.WBP_LevelUp_C:WidgetTree.TextBlock_106.Text
+#: /Game/WBP_LevelUp.WBP_LevelUp_C:WidgetTree.TextBlock_106.Text
+msgctxt ",E5AD9E214D6AF85D411E9C990BFE689D"
+msgid "원하는 강화 하나를 선택하세요"
+msgstr "Choose an upgrade"
+
+#. Key:	1C322E204312E5573BCE91A0916396F8
+#. SourceLocation:	/Game/WBP_LevelUp.WBP_LevelUp_C:WidgetTree.TextBlock_36.Text
+#: /Game/WBP_LevelUp.WBP_LevelUp_C:WidgetTree.TextBlock_36.Text
+msgctxt ",1C322E204312E5573BCE91A0916396F8"
+msgid "새로고침"
+msgstr "Reroll"
+
+#. Key:	3469F07C4AB04EADC1BD8BA5517346E6
+#. SourceLocation:	/Game/WBP_LevelUp.WBP_LevelUp_C:WidgetTree.TextBlock_38.Text
+#: /Game/WBP_LevelUp.WBP_LevelUp_C:WidgetTree.TextBlock_38.Text
+msgctxt ",3469F07C4AB04EADC1BD8BA5517346E6"
+msgid "LEVEL UP!"
+msgstr "LEVEL UP!"
+
+#. Key:	6D2FFAD64B8DC5C10DC81C962A0FA350
+#. SourceLocation:	/Game/WBP_LevelUp.WBP_LevelUp_C:WidgetTree.Txt_RerollCount.Text
+#: /Game/WBP_LevelUp.WBP_LevelUp_C:WidgetTree.Txt_RerollCount.Text
+msgctxt ",6D2FFAD64B8DC5C10DC81C962A0FA350"
+msgid "남은 횟수: 2/2"
+msgstr "Rerolls Left: 2/2"
+
+#. Key:	990F660F4A90C88BCE6A16BD2507AE60
+#. SourceLocation:	/Game/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock.Text
+#: /Game/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock.Text
+msgctxt ",990F660F4A90C88BCE6A16BD2507AE60"
+msgid "특성"
+msgstr "Traits"
+
+#. Key:	1540F1A24594BA21FF5ACBB0DBACCCD9
+#. SourceLocation:	/Game/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_1.Text
+#: /Game/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_1.Text
+msgctxt ",1540F1A24594BA21FF5ACBB0DBACCCD9"
+msgid "설정"
+msgstr "Settings"
+
+#. Key:	93C887CD452E55ACB7C603B9CC82EC9C
+#. SourceLocation:	/Game/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_2.Text
+#: /Game/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_2.Text
+msgctxt ",93C887CD452E55ACB7C603B9CC82EC9C"
+msgid "게임 종료"
+msgstr "Quit Game"
+
+#. Key:	4F908A1A4AD8E89E3F23949B1997AD28
+#. SourceLocation:	/Game/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_3.Text
+#: /Game/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_3.Text
+msgctxt ",4F908A1A4AD8E89E3F23949B1997AD28"
+msgid "무기고"
+msgstr "Armory"
+
+#. Key:	BE5997774BD750BFEAE1D686BE491D4D
+#. SourceLocation:	/Game/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_44.Text
+#: /Game/WBP_MainMenu.WBP_MainMenu_C:WidgetTree.TextBlock_44.Text
+msgctxt ",BE5997774BD750BFEAE1D686BE491D4D"
+msgid "게임시작"
+msgstr "Start Game"
+
+#. Key:	5122EF8844CB1683740657B46D20D3C4
+#. SourceLocation:	/Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock.Text
+#: /Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock.Text
+msgctxt ",5122EF8844CB1683740657B46D20D3C4"
+msgid "배경음악"
+msgstr "BGM"
+
+#. Key:	C70E175D4F481CFBF66656B224475108
+#. SourceLocation:	/Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_1.Text
+#: /Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_1.Text
+msgctxt ",C70E175D4F481CFBF66656B224475108"
+msgid "효과음"
+msgstr "SFX"
+
+#. Key:	CFB373674953F29FD0E0EDA785467E19
+#. SourceLocation:	/Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_104.Text
+#: /Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_104.Text
+msgctxt ",CFB373674953F29FD0E0EDA785467E19"
+msgid "게임으로 돌아가기"
+msgstr "Return to Game"
+
+#. Key:	73A047964A9DA5F94A04049B54FF37C6
+#. SourceLocation:	/Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_142.Text
+#: /Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_142.Text
+msgctxt ",73A047964A9DA5F94A04049B54FF37C6"
+msgid "마우스 감도"
+msgstr "Mouse Sensitivity"
+
+#. Key:	2C8661664430B7D4FDF2C89B5E5E42AD
+#. SourceLocation:	/Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_150.Text
+#: /Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_150.Text
+msgctxt ",2C8661664430B7D4FDF2C89B5E5E42AD"
+msgid "아웃라인"
+msgstr "Outline"
+
+#. Key:	D4A785AC4D4490313D8D5684D9DC9DE8
+#. SourceLocation:	/Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_191.Text
+#: /Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_191.Text
+msgctxt ",D4A785AC4D4490313D8D5684D9DC9DE8"
+msgid "전체화면 / 창모드"
+msgstr "Fullscreen / Windowed"
+
+#. Key:	EB42970C4AB4A9A7F9CDEFACF12ED75E
+#. SourceLocation:	/Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_2.Text
+#: /Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_2.Text
+msgctxt ",EB42970C4AB4A9A7F9CDEFACF12ED75E"
+msgid "화면 모드"
+msgstr "Display Mode"
+
+#. Key:	7566CA754DD6EA34B0ED668144D2B1F9
+#. SourceLocation:	/Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_205.Text
+#: /Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_205.Text
+msgctxt ",7566CA754DD6EA34B0ED668144D2B1F9"
+msgid "로비로 돌아가기"
+msgstr "Return to Lobby"
+
+#. Key:	2FFE16374D9F11F187047BB6A1598B61
+#. SourceLocation:	/Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_3.Text
+#: /Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_3.Text
+msgctxt ",2FFE16374D9F11F187047BB6A1598B61"
+msgid "게임 종료"
+msgstr "Quit Game"
+
+#. Key:	3880CBA94C7C987A0B2E3D9E28574A4A
+#. SourceLocation:	/Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_33.Text
+#: /Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_33.Text
+msgctxt ",3880CBA94C7C987A0B2E3D9E28574A4A"
+msgid "설정"
+msgstr "Settings"
+
+#. Key:	AD90390941C09A01A895BF86275177A7
+#. SourceLocation:	/Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_71.Text
+#: /Game/WBP_Settings.WBP_Settings_C:WidgetTree.TextBlock_71.Text
+msgctxt ",AD90390941C09A01A895BF86275177A7"
+msgid "W A S D : 이동 | Shift : 달리기 | Space : 점프 | 좌클릭 : 사격"
+msgstr "W A S D : Move | Shift : Sprint | Space : Jump | L-Click : Shoot"
+
+#. Key:	59D544C84346D9222515B4AE77C1BDD2
+#. SourceLocation:	/Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock.Text
+#: /Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock.Text
+msgctxt ",59D544C84346D9222515B4AE77C1BDD2"
+msgid "배경음악"
+msgstr "BGM"
+
+#. Key:	5E49F2744446B0CA56D6B790DB2F1576
+#. SourceLocation:	/Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_1.Text
+#: /Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_1.Text
+msgctxt ",5E49F2744446B0CA56D6B790DB2F1576"
+msgid "효과음"
+msgstr "SFX"
+
+#. Key:	924DC36D44FB65B1C15E4B915AF5BF37
+#. SourceLocation:	/Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_104.Text
+#: /Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_104.Text
+msgctxt ",924DC36D44FB65B1C15E4B915AF5BF37"
+msgid "게임으로 돌아가기"
+msgstr "Return to Game"
+
+#. Key:	E0EC23B34139A44D1D730CA1DED688FE
+#. SourceLocation:	/Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_142.Text
+#: /Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_142.Text
+msgctxt ",E0EC23B34139A44D1D730CA1DED688FE"
+msgid "마우스 감도"
+msgstr "Mouse Sensitivity"
+
+#. Key:	95C053E24936F334F54226BC0EA8780C
+#. SourceLocation:	/Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_150.Text
+#: /Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_150.Text
+msgctxt ",95C053E24936F334F54226BC0EA8780C"
+msgid "아웃라인"
+msgstr "Outline"
+
+#. Key:	E91300454A0F18601907E59942AFBDC1
+#. SourceLocation:	/Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_191.Text
+#: /Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_191.Text
+msgctxt ",E91300454A0F18601907E59942AFBDC1"
+msgid "전체화면 / 창모드"
+msgstr "Fullscreen / Windowed"
+
+#. Key:	E0DECE494A08962A6A06978B59245A9F
+#. SourceLocation:	/Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_2.Text
+#: /Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_2.Text
+msgctxt ",E0DECE494A08962A6A06978B59245A9F"
+msgid "화면 모드"
+msgstr "Display Mode"
+
+#. Key:	998714EC4446BDA2C7C7E3BBE8C4A60E
+#. SourceLocation:	/Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_205.Text
+#: /Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_205.Text
+msgctxt ",998714EC4446BDA2C7C7E3BBE8C4A60E"
+msgid "게임 종료"
+msgstr "Quit Game"
+
+#. Key:	70F3D325401523BDC8A24BAACEED01E9
+#. SourceLocation:	/Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_33.Text
+#: /Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_33.Text
+msgctxt ",70F3D325401523BDC8A24BAACEED01E9"
+msgid "설정"
+msgstr "Settings"
+
+#. Key:	099B1EB349C02DA1AAB8E18FCC35AA1B
+#. SourceLocation:	/Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_71.Text
+#: /Game/WBP_Settings1.WBP_Settings1_C:WidgetTree.TextBlock_71.Text
+msgctxt ",099B1EB349C02DA1AAB8E18FCC35AA1B"
+msgid "W A S D : 이동 | Shift : 달리기 | Space : 점프 | 좌클릭 : 사격"
+msgstr "W A S D : Move | Shift : Sprint | Space : Jump | L-Click : Shoot"
+
+#. Key:	1B0D69904AB5C53AB22E0AA94AA4C887
+#. SourceLocation:	/Game/WBP_TraitButton.WBP_TraitButton_C:ExecuteUbergraph_WBP_TraitButton [Script Bytecode]
+#: /Game/WBP_TraitButton.WBP_TraitButton_C:ExecuteUbergraph_WBP_TraitButton [Script Bytecode]
+msgctxt ",1B0D69904AB5C53AB22E0AA94AA4C887"
+msgid "{Name} LV : {Level}"
+msgstr "{Name} LV : {Level}"
+
+#. Key:	73D24DCB410023B0F76BEDB8C0B98177
+#. SourceLocation:	/Game/WBP_TraitButton.WBP_TraitButton_C:ExecuteUbergraph_WBP_TraitButton [Script Bytecode]
+#: /Game/WBP_TraitButton.WBP_TraitButton_C:ExecuteUbergraph_WBP_TraitButton [Script Bytecode]
+msgctxt ",73D24DCB410023B0F76BEDB8C0B98177"
+msgid "-"
+msgstr "-"
+
+#. Key:	5E77D90442C3CF545BD394A5A23068C0
+#. SourceLocation:	/Game/WBP_TraitMenu.WBP_TraitMenu_C:ExecuteUbergraph_WBP_TraitMenu [Script Bytecode]
+#: /Game/WBP_TraitMenu.WBP_TraitMenu_C:ExecuteUbergraph_WBP_TraitMenu [Script Bytecode]
+msgctxt ",5E77D90442C3CF545BD394A5A23068C0"
+msgid "보유 재화 : {Point}"
+msgstr "Credits : {Point}"
+
+#. Key:	475AE8D34429028F810EF5B1EA9EF8F6
+#. SourceLocation:	/Game/WBP_TraitMenu.WBP_TraitMenu_C:WidgetTree.TextBlock_77.Text
+#: /Game/WBP_TraitMenu.WBP_TraitMenu_C:WidgetTree.TextBlock_77.Text
+msgctxt ",475AE8D34429028F810EF5B1EA9EF8F6"
+msgid "보유 포인트:"
+msgstr "Points Left:"
+
+#. Key:	6C13938F458D8F8D3DC41AAF8A049517
+#. SourceLocation:	/Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+#: /Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+msgctxt ",6C13938F458D8F8D3DC41AAF8A049517"
+msgid "탄창 수 증가"
+msgstr "Increase Magazine Size"
+
+#. Key:	7B9D08C2439EE19C18C776A8764D8123
+#. SourceLocation:	/Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+#: /Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+msgctxt ",7B9D08C2439EE19C18C776A8764D8123"
+msgid "재장전 속도 증가"
+msgstr "Increase Reload Speed"
+
+#. Key:	C16D11CC45ED94A2F4D3A0BC005ECA1E
+#. SourceLocation:	/Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+#: /Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+msgctxt ",C16D11CC45ED94A2F4D3A0BC005ECA1E"
+msgid "치명타 확률 증가"
+msgstr "Increase Critical Rate"
+
+#. Key:	D0C6547B4E2BC45C92809E97BC56D8DF
+#. SourceLocation:	/Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+#: /Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+msgctxt ",D0C6547B4E2BC45C92809E97BC56D8DF"
+msgid "최대 체력 증가"
+msgstr "Increase Max HP"
+
+#. Key:	D4E1836C4CB97BF5820DC2BD8BABD91A
+#. SourceLocation:	/Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+#: /Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+msgctxt ",D4E1836C4CB97BF5820DC2BD8BABD91A"
+msgid "공격력 증가"
+msgstr "Increase Attack Damage"
+
+#. Key:	D6E37F4C4442B26B036DC1A6919B74C0
+#. SourceLocation:	/Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+#: /Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+msgctxt ",D6E37F4C4442B26B036DC1A6919B74C0"
+msgid "자력 범위 증가"
+msgstr "Increase Magnet Range"
+
+#. Key:	E1ECC0A440789704405F459E5294A32B
+#. SourceLocation:	/Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+#: /Game/WBP_UpgradeCard.WBP_UpgradeCard_C:ExecuteUbergraph_WBP_UpgradeCard [Script Bytecode]
+msgctxt ",E1ECC0A440789704405F459E5294A32B"
+msgid "이동속도 증가"
+msgstr "Increase Movement Speed"
+
